@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超级嘎嘎 - 案例分析</title>
+    <link rel="stylesheet" href="common.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+.detail-container {
+    min-height: 100vh;
+    padding: 120px 24px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.detail-header {
+    margin-bottom: 48px;
+}
+
+.title-and-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+.detail-title {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.account-links {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.section-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.section {
+    margin-bottom: 64px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    letter-spacing: -0.5px;
+}
+
+.section-title .icon {
+    font-size: 32px;
+}
+
+/* 核心卡片设计 */
+.apple-card {
+    background: var(--card-bg);
+    backdrop-filter: saturate(200%) blur(30px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+}
+
+/* 图表头部区 */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.chart-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+}
+
+/* 拐点标识标签 */
+.badge-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 59, 48, 0.1);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #FF3B30;
+}
+
+.dot-red {
+    width: 8px;
+    height: 8px;
+    background-color: #FF3B30;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.2);
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+/* 底部洞察网格区 */
+.insights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 24px;
+}
+
+/* 洞察对比卡片 */
+.insight-card {
+    background: #FBFBFD;
+    border-radius: 16px;
+    padding: 20px;
+    transition: transform 0.2s ease;
+}
+
+.insight-card:hover {
+    transform: translateY(-2px);
+}
+
+.insight-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.insight-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.insight-desc {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.insight-desc strong {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+/* 红底高亮（拐点前-负面） */
+.highlight-red {
+    background: rgba(255, 59, 48, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #D70015;
+    font-weight: 500;
+}
+
+/* 绿底高亮（拐点后-正面） */
+.highlight-green {
+    background: rgba(52, 199, 89, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #248A3D;
+    font-weight: 500;
+}
+
+/* 饼图容器 */
+.chart-wrapper {
+    margin: 24px 0;
+    padding: 32px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.pie-chart-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.pie-chart-left {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+.pie-chart-right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pie-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: var(--text-color);
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.legend-label {
+    flex: 1;
+    font-weight: 500;
+}
+
+.legend-value {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.data-source {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 0;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.section-content {
+    background: var(--card-bg);
+    backdrop-filter: saturate(200%) blur(30px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 32px;
+    padding: 40px;
+}
+
+/* 合并的大板块样式 */
+.combined-section {
+    background: var(--card-bg);
+    backdrop-filter: saturate(200%) blur(30px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 32px;
+    padding: 48px;
+    margin-top: 24px;
+}
+
+.subsection {
+    margin-bottom: 40px;
+}
+
+.subsection:last-child {
+    margin-bottom: 0;
+}
+
+.subsection-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--accent-color);
+}
+
+.subsection-content {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.subsection-content p {
+    margin-bottom: 12px;
+}
+
+.subsection-content ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.subsection-content li {
+    padding-left: 24px;
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.subsection-content li:before {
+    content: "•";
+    position: absolute;
+    left: 8px;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.highlight {
+    background: rgba(0, 102, 204, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.account-links {
+    display: flex;
+    gap: 12px;
+}
+
+.account-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
+    border: 0.5px solid rgba(0, 0, 0, 0.04);
+    border-radius: 98px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.account-link:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.account-link-icon {
+    font-size: 20px;
+}
+
+.chart-note {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 16px;
+}
+
+/* 爆款展示 - 横向滚动 */
+.hit-series {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    padding: 16px 4px 32px 4px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.hit-series::-webkit-scrollbar {
+    display: none;
+}
+
+/* 视频卡片主体 */
+.hit-item {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 10px;
+    width: 180px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.02);
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.hit-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
+}
+
+.hit-item:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 媒体区域 */
+.hit-item-image {
+    width: 100%;
+    aspect-ratio: 9/16;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    background-color: #f5f5f7;
+}
+
+.hit-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hit-item:hover .hit-item-image img {
+    transform: scale(1.05);
+}
+
+.hit-item:active .hit-item-image img {
+    transform: scale(1);
+}
+
+/* 底部渐变遮罩 */
+.video-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+/* 毛玻璃播放按钮 */
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.play-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 3px;
+}
+
+.hit-item:hover .play-button {
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* 视频时长标签 */
+.video-duration {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 6px;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* 内容区域 */
+.hit-item-content {
+    padding: 0 4px 4px 4px;
+}
+
+.hit-item-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hit-item-desc {
+    font-size: 12px;
+    color: #86868b;
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .detail-title {
+        font-size: 32px;
+        letter-spacing: -0.015em;
+    }
+    
+    .title-and-link {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .section-content, .combined-section {
+        padding: 24px;
+    }
+    
+    .account-links {
+        width: 100%;
+    }
+    
+    .hit-item {
+        width: 160px;
+    }
+    
+    .play-button {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .play-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .insights-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .turning-point-label {
+        top: 10px;
+        right: 20px;
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+    
+    .apple-card {
+        padding: 24px;
+    }
+    
+    .pie-chart-container {
+        height: 250px;
+    }
+    
+    .pie-chart-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    
+    .pie-chart-left {
+        height: 250px;
+    }
+    
+    .chart-wrapper {
+        padding: 16px;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">王楚杰</a>
+            <div class="nav-links">
+                <a href="index.html#accounts">账号案例</a>
+                <a href="index.html#series">系列案例</a>
+                <a href="index.html#content">内容能力</a>
+                <a href="index.html#ai-tools">AI 能力</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="detail-container">
+        <a href="index.html#accounts" class="back-button" style="position: fixed; top: 100px; left: 24px; z-index: 100;">
+            <span>←</span>
+            <span>返回主页</span>
+        </a>
+
+        <div class="detail-header">
+            <div class="title-and-link">
+                <h1 class="detail-title">《超级嘎嘎》 | 账号从0到1的运营阶段</h1>
+                
+                <!-- 账号链接 -->
+                <div class="account-links">
+                    <a href="https://www.douyin.com/user/MS4wLjABAAAALteoJqSY6NESHqi_fwvha-MgXGj3CR_bEr0ESNmzbWLT9UNAFRxGNcF0eIFaVVcr?from_tab_name=main" target="_blank" class="account-link">
+                        <img src="douyin.png" alt="抖音" style="width: 20px; height: 20px;">
+                        <span>抖音主页</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 账号阶段图表 -->
+        <div class="section">
+            <div class="section-title-row">
+                <h2 class="section-title">
+                    <span>账号内容点赞与更新趋势</span>
+                </h2>
+            </div>
+            
+            <div class="section-content apple-card">
+                <!-- 图表区 -->
+                <div class="chart-container">
+                    <canvas id="cjggChart"></canvas>
+                </div>
+
+                <!-- 洞察分析区 (拐点前后对比) -->
+                <div class="insights-grid">
+                    <div class="insight-card before">
+                        <div class="insight-header">
+                            <span class="insight-title">拐点前</span>
+                        </div>
+                        <p class="insight-desc"><span class="highlight-red">更新困难</span>，<span class="highlight-red">频次低</span>，数据处于<span class="highlight-red">爬坡期</span>。</p>
+                    </div>
+                    
+                    <div class="insight-card after">
+                        <div class="insight-header">
+                            <span class="insight-title">拐点后</span>
+                        </div>
+                        <p class="insight-desc"><span class="highlight-green">趋于稳定</span>，<span class="highlight-green">爆款每周1个</span>，偶现<span class="highlight-green">大爆款</span>。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 拐点措施 -->
+        <div class="section">
+            <h2 class="section-title">
+                <span>拐点措施</span>
+            </h2>
+            <div class="combined-section">
+                <!-- 问题归因 -->
+                <div class="subsection">
+                    <h3 class="subsection-title">问题归因</h3>
+                    <div class="subsection-content">
+                        <p><strong>业务背景：</strong>账号要求以"KPL选手人物传"作为主要系列，但是优质的人物传产出速度慢，要维持一周4更压力大，流量不稳定，且账号没有日常更新系列，易断更</p>
+                        <p><strong>问题指向：</strong>传统的人物传需要优化，变得轻量且更有流量；账号需要增加额外系列，保持高频更新</p>
+                    </div>
+                </div>
+
+                <!-- 解决措施 -->
+                <div class="subsection">
+                    <h3 class="subsection-title">解决措施</h3>
+                    <div class="subsection-content">
+                        <p><strong>1、扩充赛道：</strong>调研发现，KPL赛道下"选手故事"相关的内容流量，主要集中在"选手动态""选手八卦"。</p>
+                        
+                        <!-- 饼图：内容类型分布 -->
+                        <div class="chart-wrapper">
+                            <div class="pie-chart-layout">
+                                <div class="pie-chart-left">
+                                    <canvas id="contentTypePieChart"></canvas>
+                                </div>
+                                <div class="pie-chart-right">
+                                    <div class="pie-legend" id="pieLegend"></div>
+                                    <p class="data-source">数据来源：2022年7月前，抖音KPL相关1w点赞以上的视频，共计4630条，其中"选手故事"赛道内容共350条</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p><strong>2、调整策略方案：</strong>将内容视角从单纯的KPL正经人物故事 扩充到 KPL选手日常、KPL选手八卦、KPL选手趣闻等泛娱乐化的领域</p>
+                    </div>
+                </div>
+
+                <!-- 实施结果 -->
+                <div class="subsection">
+                    <h3 class="subsection-title">实施结果</h3>
+                    <div class="subsection-content">
+                        <p><strong>1. KPI达成</strong></p>
+                        <p>顺利完成一个月 <span class="highlight">800万+</span> 的KPI</p>
+                        
+                        <p><strong>2. 爆款系列沉淀</strong></p>
+                        <p><strong>趣味人物传系列</strong>，期均 <span class="highlight">10万赞</span>：将KPL的人物故事以吐槽、怪谈的方式呈现</p>
+                        <div class="hit-series" style="margin-top: 12px;">
+                            <a href="https://v.douyin.com/UrDQulWgVQg/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="cjgg_hit1.png" alt="趣味人物传系列1">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">03:24</span>
+                                </div>
+                            </a>
+                            <a href="https://v.douyin.com/IApwpiNHvQQ/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="cjgg_hit2.png" alt="趣味人物传系列2">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">02:58</span>
+                                </div>
+                            </a>
+                            <a href="https://v.douyin.com/khdVdRo7_Uo/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="cjgg_hit3.png" alt="趣味人物传系列3">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">04:12</span>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <p><strong>3. 日常系列沉淀</strong></p>
+                        <p><strong>KPL日常周报系列</strong>，期均 <span class="highlight">1万赞</span>：将KPL每周发生的大事件更新为每周周报，为账号提供稳定的内容来源，保证更新频率</p>
+                        <div class="hit-series" style="margin-top: 12px;">
+                            <a href="https://v.douyin.com/O4dC3-SzsKQ/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="cjgg_hit4.png" alt="KPL日常周报1">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">02:15</span>
+                                </div>
+                            </a>
+                            <a href="https://v.douyin.com/EyQVKHLXadg/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="cjgg_hit5.png" alt="KPL日常周报2">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">03:08</span>
+                                </div>
+                            </a>
+                            <a href="https://v.douyin.com/W0ZfYNyDBpU/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="cjgg_hit6.png" alt="KPL日常周报3">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">02:42</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 超级嘎嘎数据
+        const cjggData = {
+            "weekly": [{"week": "2022-W29", "likes": 52888, "count": 2}, {"week": "2022-W30", "likes": 39626, "count": 4}, {"week": "2022-W31", "likes": 85327, "count": 4}, {"week": "2022-W32", "likes": 205614, "count": 3}, {"week": "2022-W33", "likes": 426736, "count": 6}, {"week": "2022-W34", "likes": 131429, "count": 4}, {"week": "2022-W35", "likes": 251865, "count": 5}, {"week": "2022-W36", "likes": 27458, "count": 3}, {"week": "2022-W37", "likes": 101968, "count": 4}, {"week": "2022-W38", "likes": 13538, "count": 2}, {"week": "2022-W39", "likes": 405910, "count": 4}, {"week": "2022-W40", "likes": 84019, "count": 4}, {"week": "2022-W41", "likes": 61964, "count": 4}, {"week": "2022-W42", "likes": 38309, "count": 1}, {"week": "2022-W43", "likes": 18000, "count": 0}],
+            "turning_point": "2022-W30"
+        };
+
+        // 绘制图表
+        const ctx = document.getElementById('cjggChart').getContext('2d');
+        
+        // 准备数据
+        const labels = cjggData.weekly.map((_, index) => `W${index + 1}`);
+        const likesData = cjggData.weekly.map(item => item.likes / 10000); // 转换为万
+        const turningPointIndex = cjggData.weekly.findIndex(item => item.week === cjggData.turning_point);
+        
+        // 创建渐变色 (苹果蓝渐变)
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(0, 122, 255, 0.2)');
+        gradient.addColorStop(1, 'rgba(0, 122, 255, 0)');
+
+        // 自定义插件：在红点上方绘制标注
+        const turningPointLabelPlugin = {
+            id: 'turningPointLabel',
+            afterDatasetsDraw(chart) {
+                const { ctx, chartArea, scales } = chart;
+                const meta = chart.getDatasetMeta(0);
+                const point = meta.data[turningPointIndex];
+                
+                if (point) {
+                    const x = point.x;
+                    const y = point.y;
+                    
+                    // 绘制标注背景
+                    ctx.save();
+                    ctx.fillStyle = 'rgba(255, 59, 48, 0.1)';
+                    ctx.strokeStyle = 'rgba(255, 59, 48, 0.3)';
+                    ctx.lineWidth = 1;
+                    
+                    const text = '阶段性拐点 (第2周)';
+                    ctx.font = '600 13px -apple-system, BlinkMacSystemFont, sans-serif';
+                    const textWidth = ctx.measureText(text).width;
+                    const padding = 12;
+                    const boxWidth = textWidth + padding * 2;
+                    const boxHeight = 28;
+                    const boxX = x - boxWidth / 2;
+                    const boxY = y - 50; // 在红点上方50px
+                    
+                    // 绘制圆角矩形背景
+                    ctx.beginPath();
+                    ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 20);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // 绘制红点
+                    ctx.beginPath();
+                    ctx.arc(boxX + 10, boxY + boxHeight / 2, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#FF3B30';
+                    ctx.fill();
+                    
+                    // 绘制红点光晕
+                    ctx.beginPath();
+                    ctx.arc(boxX + 10, boxY + boxHeight / 2, 7, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(255, 59, 48, 0.2)';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                    
+                    // 绘制文字
+                    ctx.fillStyle = '#FF3B30';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(text, boxX + 22, boxY + boxHeight / 2);
+                    
+                    // 绘制指向线
+                    ctx.beginPath();
+                    ctx.moveTo(x, boxY + boxHeight);
+                    ctx.lineTo(x, y - 8);
+                    ctx.strokeStyle = 'rgba(255, 59, 48, 0.4)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    ctx.restore();
+                }
+            }
+        };
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '点赞量',
+                    data: likesData,
+                    borderColor: '#007AFF',
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: (context) => {
+                        return context.dataIndex === turningPointIndex ? 6 : 0;
+                    },
+                    pointBackgroundColor: (context) => {
+                        return context.dataIndex === turningPointIndex ? '#FF3B30' : '#007AFF';
+                    },
+                    pointBorderColor: '#FFFFFF',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 8,
+                    pointHoverBackgroundColor: '#FF3B30',
+                    pointHoverBorderColor: '#FFFFFF',
+                    pointHoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 60, // 增加顶部空间以容纳标注
+                        right: 20,
+                        bottom: 10,
+                        left: 10
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        cornerRadius: 8,
+                        titleFont: { size: 14, family: '-apple-system', weight: '500' },
+                        bodyFont: { size: 14, family: '-apple-system' },
+                        displayColors: false,
+                        callbacks: {
+                            title: function(context) {
+                                return '周: ' + cjggData.weekly[context[0].dataIndex].week;
+                            },
+                            label: function(context) {
+                                return '点赞量: ' + context.parsed.y.toFixed(2) + '万';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        position: 'right',
+                        grid: {
+                            display: true,
+                            color: 'rgba(0, 0, 0, 0.04)',
+                            drawBorder: false
+                        },
+                        border: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#86868B',
+                            font: {
+                                family: '-apple-system',
+                                size: 12
+                            },
+                            padding: 10,
+                            callback: function(value) {
+                                return value.toFixed(0) + 'w';
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            },
+            plugins: [turningPointLabelPlugin]
+        });
+
+        // 内容类型分布饼图
+        const pieCtx = document.getElementById('contentTypePieChart').getContext('2d');
+        
+        const contentTypeData = {
+            labels: ['选手动态', '选手采访', '娱乐八卦', '其他', '人物传记', '选手互动'],
+            datasets: [{
+                data: [34.38, 21.49, 19.77, 14.61, 6.88, 2.87],
+                backgroundColor: [
+                    'rgba(0, 122, 255, 0.7)',   // 苹果蓝 - 降低饱和度
+                    'rgba(90, 200, 250, 0.7)',  // 浅蓝 - 降低饱和度
+                    'rgba(52, 199, 89, 0.7)',   // 绿色 - 降低饱和度
+                    'rgba(255, 149, 0, 0.7)',   // 橙色 - 降低饱和度
+                    'rgba(255, 59, 48, 0.7)',   // 红色 - 降低饱和度
+                    'rgba(175, 82, 222, 0.7)'   // 紫色 - 降低饱和度
+                ],
+                borderColor: '#FFFFFF',
+                borderWidth: 3
+            }]
+        };
+
+        const pieChart = new Chart(pieCtx, {
+            type: 'doughnut',
+            data: contentTypeData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false // 隐藏默认图例，使用自定义图例
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        cornerRadius: 8,
+                        titleFont: { size: 14, family: '-apple-system', weight: '500' },
+                        bodyFont: { size: 14, family: '-apple-system' },
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                },
+                cutout: '60%' // 环形图
+            }
+        });
+
+        // 创建自定义图例
+        const legendContainer = document.getElementById('pieLegend');
+        const colors = [
+            'rgba(0, 122, 255, 0.7)',
+            'rgba(90, 200, 250, 0.7)',
+            'rgba(52, 199, 89, 0.7)',
+            'rgba(255, 149, 0, 0.7)',
+            'rgba(255, 59, 48, 0.7)',
+            'rgba(175, 82, 222, 0.7)'
+        ];
+        
+        contentTypeData.labels.forEach((label, index) => {
+            const item = document.createElement('div');
+            item.className = 'legend-item';
+            
+            const colorBox = document.createElement('div');
+            colorBox.className = 'legend-color';
+            colorBox.style.backgroundColor = colors[index];
+            
+            const labelSpan = document.createElement('span');
+            labelSpan.className = 'legend-label';
+            labelSpan.textContent = label;
+            
+            const valueSpan = document.createElement('span');
+            valueSpan.className = 'legend-value';
+            valueSpan.textContent = contentTypeData.datasets[0].data[index] + '%';
+            
+            item.appendChild(colorBox);
+            item.appendChild(labelSpan);
+            item.appendChild(valueSpan);
+            legendContainer.appendChild(item);
+        });
+    </script>
+</body>
+</html>

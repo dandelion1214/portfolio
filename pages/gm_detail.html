@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GM的秘密基地 - 案例分析</title>
+    <link rel="stylesheet" href="common.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+.detail-container {
+    min-height: 100vh;
+    padding: 120px 24px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.detail-header {
+    margin-bottom: 48px;
+}
+
+.title-and-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+.detail-title {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.account-links {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.account-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
+    border: 0.5px solid rgba(0, 0, 0, 0.04);
+    border-radius: 98px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.account-link:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.account-link-icon {
+    font-size: 20px;
+}
+
+.section-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.section {
+    margin-bottom: 64px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    letter-spacing: -0.5px;
+}
+
+/* 核心卡片设计 */
+.apple-card {
+    background: var(--card-bg);
+    backdrop-filter: saturate(200%) blur(30px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+}
+
+/* 图表头部区 */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.chart-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+}
+
+/* 拐点标识标签 */
+.badge-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 59, 48, 0.1);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #FF3B30;
+}
+
+.dot-red {
+    width: 8px;
+    height: 8px;
+    background-color: #FF3B30;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.2);
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+/* 底部洞察网格区 */
+.insights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 24px;
+}
+
+/* 洞察对比卡片 */
+.insight-card {
+    background: #FBFBFD;
+    border-radius: 16px;
+    padding: 20px;
+    transition: transform 0.2s ease;
+}
+
+.insight-card:hover {
+    transform: translateY(-2px);
+}
+
+.insight-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.insight-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.insight-desc {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.insight-desc strong {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+/* 红底高亮（拐点前-负面） */
+.highlight-red {
+    background: rgba(255, 59, 48, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #D70015;
+    font-weight: 500;
+}
+
+/* 绿底高亮（拐点后-正面） */
+.highlight-green {
+    background: rgba(52, 199, 89, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #248A3D;
+    font-weight: 500;
+}
+
+.section-content {
+    background: var(--card-bg);
+    backdrop-filter: saturate(200%) blur(30px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 32px;
+    padding: 40px;
+}
+
+/* 合并的大板块样式 */
+.combined-section {
+    background: var(--card-bg);
+    backdrop-filter: saturate(200%) blur(30px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 32px;
+    padding: 48px;
+    margin-top: 24px;
+}
+
+.subsection {
+    margin-bottom: 40px;
+}
+
+.subsection:last-child {
+    margin-bottom: 0;
+}
+
+.subsection-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--accent-color);
+}
+
+.subsection-content {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.subsection-content p {
+    margin-bottom: 12px;
+}
+
+.subsection-content ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.subsection-content li {
+    padding-left: 24px;
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.subsection-content li:before {
+    content: "•";
+    position: absolute;
+    left: 8px;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.highlight {
+    background: rgba(0, 102, 204, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.chart-note {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 16px;
+}
+
+/* 爆款展示 - 横向滚动 */
+.hit-series {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    padding: 16px 4px 32px 4px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.hit-series::-webkit-scrollbar {
+    display: none;
+}
+
+/* 视频卡片主体 */
+.hit-item {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 10px;
+    width: 280px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.02);
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.hit-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
+}
+
+.hit-item:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 媒体区域 */
+.hit-item-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    background-color: #f5f5f7;
+}
+
+.hit-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hit-item:hover .hit-item-image img {
+    transform: scale(1.05);
+}
+
+.hit-item:active .hit-item-image img {
+    transform: scale(1);
+}
+
+/* 底部渐变遮罩 */
+.video-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+/* 毛玻璃播放按钮 */
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.play-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 3px;
+}
+
+.hit-item:hover .play-button {
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* 视频时长标签 */
+.video-duration {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 6px;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* 内容区域 */
+.hit-item-content {
+    padding: 0 4px 4px 4px;
+}
+
+.hit-item-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hit-item-desc {
+    font-size: 12px;
+    color: #86868b;
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.hit-item-link {
+    display: inline-block;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.hit-item-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .detail-title {
+        font-size: 32px;
+        letter-spacing: -0.015em;
+    }
+    
+    .title-and-link {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .section-content, .combined-section {
+        padding: 24px;
+    }
+    
+    .account-links {
+        width: 100%;
+    }
+    
+    .hit-item {
+        width: 240px;
+    }
+    
+    .play-button {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .play-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .insights-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .apple-card {
+        padding: 24px;
+    }
+    
+    .channels-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 选题渠道展示样式 - 横向滚动 */
+.channels-overview {
+    display: flex;
+    gap: 16px;
+    margin: 24px 0;
+    overflow-x: auto;
+    padding-bottom: 16px;
+    scroll-snap-type: x mandatory;
+}
+
+.channels-overview::-webkit-scrollbar {
+    height: 8px;
+}
+
+.channels-overview::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.channels-overview::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.channels-overview::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.channel-stat {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    min-width: 200px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.channel-stat:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.channel-stat-number {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--accent-color);
+    line-height: 1;
+    margin-bottom: 12px;
+}
+
+.channel-stat-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 4px;
+}
+
+.channel-stat-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .channel-stat {
+        min-width: 160px;
+    }
+    
+    .channel-stat-number {
+        font-size: 36px;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">王楚杰</a>
+            <div class="nav-links">
+                <a href="index.html#accounts">账号案例</a>
+                <a href="index.html#series">系列案例</a>
+                <a href="index.html#content">内容能力</a>
+                <a href="index.html#ai-tools">AI 能力</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="detail-container">
+        <a href="index.html#accounts" class="back-button" style="position: fixed; top: 100px; left: 24px; z-index: 100;">
+            <span>←</span>
+            <span>返回主页</span>
+        </a>
+
+        <div class="detail-header">
+            <div class="title-and-link">
+                <h1 class="detail-title">《GM的秘密基地》 | 账号从1到10的运营阶段</h1>
+                
+                <!-- 账号链接 -->
+                <div class="account-links">
+                    <a href="https://www.douyin.com/user/MS4wLjABAAAA_NATAOd6jEeRoh5A6JxULnPgf9H0bRRPYRkwbe9JquM?from_tab_name=main" target="_blank" class="account-link">
+                        <img src="douyin.png" alt="抖音" style="width: 20px; height: 20px;">
+                        <span>抖音主页</span>
+                    </a>
+                    <a href="https://space.bilibili.com/73415355?spm_id_from=333.337.0.0" target="_blank" class="account-link">
+                        <img src="bilibili.png" alt="B站" style="width: 20px; height: 20px;">
+                        <span>B站主页</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 账号阶段图表 -->
+        <div class="section">
+            <div class="section-title-row">
+                <h2 class="section-title">
+                    <span>账号内容播放与更新趋势</span>
+                </h2>
+            </div>
+            <div class="section-content apple-card">
+                <!-- 图表区 -->
+                <div class="chart-container">
+                    <canvas id="gmChart"></canvas>
+                </div>
+
+                <!-- 洞察分析区 (拐点前后对比) -->
+                <div class="insights-grid">
+                    <div class="insight-card before">
+                        <div class="insight-header">
+                            <span class="insight-title">拐点前</span>
+                        </div>
+                        <p class="insight-desc">起号阶段，<span class="highlight-red">流量和更新不稳定</span>，有<span class="highlight-red">下滑趋势</span>。</p>
+                    </div>
+                    
+                    <div class="insight-card after">
+                        <div class="insight-header">
+                            <span class="insight-title">拐点后</span>
+                        </div>
+                        <p class="insight-desc">新策略下，<span class="highlight-green">流量上升</span>，<span class="highlight-green">更新量增加</span>，<span class="highlight-green">爆款</span>高峰和<span class="highlight-green">频率提升</span>。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题分析与解决（合并板块） -->
+        <div class="section">
+            <h2 class="section-title">
+                <span>拐点措施</span>
+            </h2>
+            <div class="combined-section">
+                <!-- 问题归因 -->
+                <div class="subsection">
+                    <h3 class="subsection-title">问题归因</h3>
+                    <div class="subsection-content">
+                        <p><strong>业务背景：</strong>更新缓慢，前期可用素材少，拍摄素材进入退而求其次的状态；组织上后期不饱和，人力富裕</p>
+                        <p><strong>问题指向：</strong>前期产能波动，优质内容素材少</p>
+                        <p><strong>根本原因：</strong>优质选题少，可更新系列少</p>
+                    </div>
+                </div>
+
+                <!-- 解决措施 -->
+                <div class="subsection">
+                    <h3 class="subsection-title">解决措施</h3>
+                    <div class="subsection-content">
+                        <ul>
+                            <li>基于原有的选题渠道继续扩展</li>
+                            <li>从现有选题中挖掘出未被察觉的"流量系列"</li>
+                            <li>开发新系列</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 实施结果 -->
+                <div class="subsection">
+                    <h3 class="subsection-title">实施结果</h3>
+                    <div class="subsection-content">
+                        <p><strong>1. 选题渠道扩展</strong></p>
+                        <p>原有选题渠道从 <span class="highlight">3个</span> 扩展为 <span class="highlight">51个</span>，覆盖6大品类：</p>
+                        
+                        <div class="channels-overview">
+                            <div class="channel-stat">
+                                <div class="channel-stat-number">14</div>
+                                <div class="channel-stat-label">小众puzzle品牌</div>
+                                <div class="channel-stat-desc">Kubiya、Pelikan、Sloyd等</div>
+                            </div>
+                            <div class="channel-stat">
+                                <div class="channel-stat-number">3</div>
+                                <div class="channel-stat-label">设计师工作室</div>
+                                <div class="channel-stat-desc">Art of Play、Felix Ure等</div>
+                            </div>
+                            <div class="channel-stat">
+                                <div class="channel-stat-number">18</div>
+                                <div class="channel-stat-label">创意玩具平台</div>
+                                <div class="channel-stat-desc">Puzzle Master、Knobelbox等</div>
+                            </div>
+                            <div class="channel-stat">
+                                <div class="channel-stat-number">3</div>
+                                <div class="channel-stat-label">拍卖网</div>
+                                <div class="channel-stat-desc">Baxterweb、Cubicdissection等</div>
+                            </div>
+                            <div class="channel-stat">
+                                <div class="channel-stat-number">12</div>
+                                <div class="channel-stat-label">拼图比赛平台</div>
+                                <div class="channel-stat-desc">Puzzle Party、IPP36等</div>
+                            </div>
+                            <div class="channel-stat">
+                                <div class="channel-stat-number">1</div>
+                                <div class="channel-stat-label">粉丝私信搜集统计</div>
+                                <div class="channel-stat-desc">粉丝自制作品收集</div>
+                            </div>
+                        </div>
+                        
+                        <p><strong>2. 挖掘流量系列"智商测试题"</strong>，期均 <span class="highlight">283万</span> 播放：地域智力题结合产品解密，泛娱乐流量成功破圈</p>
+                        <div class="hit-series" style="margin-top: 12px;">
+                            <a href="https://www.bilibili.com/video/BV1xY4y1E7Fn/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="gm_hit1.png" alt="地域智力题视频封面">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">08:24</span>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <p><strong>3. 新版变种系列"单题解密"</strong>，期均 <span class="highlight">90万</span> 播放：用单个智力题撑起一期视频</p>
+                        <div class="hit-series" style="margin-top: 12px;">
+                            <a href="https://www.bilibili.com/video/BV1wb4y1b7hX/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="gm_hit2.png" alt="首期视频封面">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">06:15</span>
+                                </div>
+                            </a>
+                            <a href="https://www.bilibili.com/video/BV1RP4y157ju/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="gm_hit3.png" alt="第二期视频封面">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">07:32</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // GM周数据 - 按周聚合，横坐标不显示
+        const gmWeeklyData = {"weekly":[{"week":"2020-W08","views":1633849},{"week":"2020-W09","views":1212947},{"week":"2020-W10","views":1611843},{"week":"2020-W11","views":1594779},{"week":"2020-W12","views":650750},{"week":"2020-W14","views":1497362},{"week":"2020-W15","views":1553900},{"week":"2020-W16","views":991845},{"week":"2020-W17","views":2461807},{"week":"2020-W18","views":1793772},{"week":"2020-W19","views":1267089},{"week":"2020-W20","views":723294},{"week":"2020-W21","views":691619},{"week":"2020-W22","views":1789842},{"week":"2020-W23","views":3377637},{"week":"2020-W24","views":2367677},{"week":"2020-W25","views":3400052},{"week":"2020-W26","views":1460316},{"week":"2020-W27","views":2743615},{"week":"2020-W28","views":2026665},{"week":"2020-W29","views":1095193},{"week":"2020-W32","views":6732677},{"week":"2020-W33","views":1778875},{"week":"2020-W34","views":3099941},{"week":"2020-W35","views":2180058},{"week":"2020-W36","views":1694316},{"week":"2020-W37","views":1467685},{"week":"2020-W38","views":2012604},{"week":"2020-W39","views":743349},{"week":"2020-W40","views":1033434},{"week":"2020-W41","views":551756},{"week":"2020-W42","views":741464},{"week":"2020-W43","views":446207},{"week":"2020-W46","views":1017409},{"week":"2020-W48","views":1553775},{"week":"2020-W49","views":1544761},{"week":"2020-W50","views":573027},{"week":"2020-W51","views":827454},{"week":"2020-W52","views":996068},{"week":"2020-W53","views":651895},{"week":"2021-W01","views":918504},{"week":"2021-W03","views":4642889},{"week":"2021-W04","views":715175},{"week":"2021-W05","views":523124},{"week":"2021-W06","views":2232471},{"week":"2021-W07","views":1283694},{"week":"2021-W08","views":477874},{"week":"2021-W09","views":1499341},{"week":"2021-W10","views":986713},{"week":"2021-W11","views":1209055},{"week":"2021-W13","views":4528792},{"week":"2021-W14","views":8481485},{"week":"2021-W15","views":2144993},{"week":"2021-W16","views":2962161},{"week":"2021-W17","views":4212167},{"week":"2021-W18","views":2186510},{"week":"2021-W19","views":3643771},{"week":"2021-W20","views":1910259},{"week":"2021-W21","views":3867119},{"week":"2021-W22","views":5178477},{"week":"2021-W23","views":3370066},{"week":"2021-W24","views":1274312},{"week":"2021-W25","views":1342122},{"week":"2021-W26","views":2482938},{"week":"2021-W27","views":1463759},{"week":"2021-W28","views":2583549},{"week":"2021-W29","views":1487381},{"week":"2021-W31","views":5091336},{"week":"2021-W32","views":1546864},{"week":"2021-W34","views":1125716},{"week":"2021-W35","views":2158240},{"week":"2021-W37","views":2649303},{"week":"2021-W38","views":695795},{"week":"2021-W39","views":2695280},{"week":"2021-W41","views":1255678},{"week":"2021-W42","views":899693},{"week":"2021-W43","views":1870538},{"week":"2021-W44","views":1259808},{"week":"2021-W45","views":1689597},{"week":"2021-W46","views":2826000},{"week":"2021-W48","views":994042},{"week":"2021-W49","views":2074193},{"week":"2021-W51","views":1063723},{"week":"2021-W52","views":3679687},{"week":"2022-W01","views":823061},{"week":"2022-W02","views":1113387},{"week":"2022-W03","views":1151383},{"week":"2022-W04","views":8179754},{"week":"2022-W05","views":1363085},{"week":"2022-W07","views":1672707},{"week":"2022-W08","views":1871289},{"week":"2022-W09","views":2561265},{"week":"2022-W13","views":4794935},{"week":"2022-W18","views":1251819},{"week":"2022-W21","views":1709163},{"week":"2022-W22","views":1430069},{"week":"2022-W26","views":1075427},{"week":"2022-W27","views":2818902},{"week":"2022-W30","views":1208574},{"week":"2022-W31","views":820239},{"week":"2022-W32","views":896206},{"week":"2022-W33","views":1016732},{"week":"2022-W36","views":1166685},{"week":"2022-W39","views":654343},{"week":"2022-W45","views":1001953},{"week":"2022-W47","views":899581},{"week":"2022-W48","views":701856},{"week":"2022-W49","views":1579534},{"week":"2022-W52","views":2195115}],"turning_point_index":46};
+        
+        const ctx = document.getElementById('gmChart').getContext('2d');
+        
+        // 准备数据 - 2021-W08在索引46
+        const weeklyLabels = gmWeeklyData.weekly.map((_, index) => `W${index + 1}`);
+        const viewsData = gmWeeklyData.weekly.map(v => v.views / 10000); // 转换为万
+        const turningPointIndex = gmWeeklyData.turning_point_index;
+        
+        // 创建渐变色 (苹果蓝渐变)
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(0, 122, 255, 0.2)');
+        gradient.addColorStop(1, 'rgba(0, 122, 255, 0)');
+
+        // 自定义插件：在红点上方绘制标注
+        const turningPointLabelPlugin = {
+            id: 'turningPointLabel',
+            afterDatasetsDraw(chart) {
+                const { ctx, chartArea, scales } = chart;
+                const meta = chart.getDatasetMeta(0);
+                const point = meta.data[turningPointIndex];
+                
+                if (point) {
+                    const x = point.x;
+                    const y = point.y;
+                    
+                    // 绘制标注背景
+                    ctx.save();
+                    ctx.fillStyle = 'rgba(255, 59, 48, 0.1)';
+                    ctx.strokeStyle = 'rgba(255, 59, 48, 0.3)';
+                    ctx.lineWidth = 1;
+                    
+                    const text = '阶段性拐点 (2021-W08)';
+                    ctx.font = '600 13px -apple-system, BlinkMacSystemFont, sans-serif';
+                    const textWidth = ctx.measureText(text).width;
+                    const padding = 12;
+                    const boxWidth = textWidth + padding * 2;
+                    const boxHeight = 28;
+                    const boxX = x - boxWidth / 2;
+                    const boxY = y - 80; // 在红点上方80px（增加距离避免被线条遮挡）
+                    
+                    // 绘制圆角矩形背景
+                    ctx.beginPath();
+                    ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 20);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // 绘制红点
+                    ctx.beginPath();
+                    ctx.arc(boxX + 10, boxY + boxHeight / 2, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#FF3B30';
+                    ctx.fill();
+                    
+                    // 绘制红点光晕
+                    ctx.beginPath();
+                    ctx.arc(boxX + 10, boxY + boxHeight / 2, 7, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(255, 59, 48, 0.2)';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                    
+                    // 绘制文字
+                    ctx.fillStyle = '#FF3B30';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(text, boxX + 22, boxY + boxHeight / 2);
+                    
+                    // 绘制指向线
+                    ctx.beginPath();
+                    ctx.moveTo(x, boxY + boxHeight);
+                    ctx.lineTo(x, y - 8);
+                    ctx.strokeStyle = 'rgba(255, 59, 48, 0.4)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    ctx.restore();
+                }
+            }
+        };
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: weeklyLabels,
+                datasets: [{
+                    label: '播放量',
+                    data: viewsData,
+                    borderColor: '#007AFF',
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: (context) => {
+                        return context.dataIndex === turningPointIndex ? 6 : 0;
+                    },
+                    pointBackgroundColor: (context) => {
+                        return context.dataIndex === turningPointIndex ? '#FF3B30' : '#007AFF';
+                    },
+                    pointBorderColor: '#FFFFFF',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 8,
+                    pointHoverBackgroundColor: '#FF3B30',
+                    pointHoverBorderColor: '#FFFFFF',
+                    pointHoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 80, // 增加顶部空间以容纳标注
+                        right: 20,
+                        bottom: 10,
+                        left: 10
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        cornerRadius: 8,
+                        titleFont: { size: 14, family: '-apple-system', weight: '500' },
+                        bodyFont: { size: 14, family: '-apple-system' },
+                        displayColors: false,
+                        callbacks: {
+                            title: function(context) {
+                                return '周: ' + gmWeeklyData.weekly[context[0].dataIndex].week;
+                            },
+                            label: function(context) {
+                                return '播放量: ' + context.parsed.y.toFixed(2) + '万';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        position: 'right',
+                        grid: {
+                            display: true,
+                            color: 'rgba(0, 0, 0, 0.04)',
+                            drawBorder: false
+                        },
+                        border: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#86868B',
+                            font: {
+                                family: '-apple-system',
+                                size: 12
+                            },
+                            padding: 10,
+                            callback: function(value) {
+                                return value.toFixed(0) + 'w';
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            },
+            plugins: [turningPointLabelPlugin]
+        });
+    </script>
+</body>
+</html>

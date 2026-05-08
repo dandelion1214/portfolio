@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文案展示 - 王楚杰</title>
+    <link rel="stylesheet" href="common.css">
+    <style>
+.page-container {
+    min-height: 100vh;
+    padding: 120px 24px 80px;
+}
+
+.page-header {
+    max-width: 1200px;
+    margin: 0 auto 64px;
+    text-align: center;
+}
+
+.page-title {
+    font-size: 64px;
+    letter-spacing: -0.015em;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.page-description {
+    font-size: 21px;
+    color: var(--text-secondary);
+}
+
+/* 内容区域 */
+.content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section {
+    margin-bottom: 80px;
+}
+
+.section-title {
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.section-subtitle {
+    font-size: 18px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+/* 视频链接 */
+.video-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 32px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: saturate(200%) blur(30px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 24px;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.video-link:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* 文案对比 */
+.comparison-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    margin-bottom: 64px;
+}
+
+.copywriting-box {
+    backdrop-filter: saturate(200%) blur(30px);
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 32px;
+    padding: 40px;
+    box-shadow: var(--shadow);
+}
+
+.copywriting-label {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.copywriting-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text-color);
+    white-space: pre-wrap;
+}
+
+/* 统一段落间距 */
+.copywriting-text p {
+    margin-bottom: 1.5em;
+}
+
+.copywriting-text br {
+    display: block;
+    content: "";
+    margin-top: 1.5em;
+}
+
+.copywriting-text .highlight {
+    background: rgba(255, 59, 48, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #ff3b30;
+    font-weight: 500;
+}
+
+/* 左侧-病句/错误 - 红色背景（无删除线） */
+.copywriting-text .error {
+    background: rgba(255, 59, 48, 0.15);
+    padding: 2px 0px;
+    border-radius: 4px;
+    color: #ff3b30;
+    font-weight: 500;
+}
+
+/* 左侧-可优化的表达 - 蓝色背景（无删除线） */
+.copywriting-text .can-optimize {
+    background: rgba(0, 122, 255, 0.15);
+    padding: 2px 0px;
+    border-radius: 4px;
+    color: #0066CC;
+    font-weight: 500;
+}
+
+/* 右侧-新增的内容 - 绿色背景 */
+.copywriting-text .add {
+    background: rgba(52, 199, 89, 0.15);
+    padding: 2px 0px;
+    border-radius: 4px;
+    color: #248A3D;
+    font-weight: 500;
+}
+
+/* 右侧-优化润色的内容 - 蓝色背景 */
+.copywriting-text .optimize {
+    background: rgba(0, 122, 255, 0.15);
+    padding: 2px 0px;
+    border-radius: 4px;
+    color: #0066CC;
+    font-weight: 500;
+}
+
+/* 黄色注释说明 */
+.copywriting-text .note {
+    display: block;
+    background: rgba(255, 204, 0, 0.12);
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #996600;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    border-left: 3px solid #ffcc00;
+}
+
+/* 标注提示 */
+.annotation-tips {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 12px;
+}
+
+.annotation-tips .tip-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+}
+
+/* 认知清单 */
+.insights-grid {
+    display: grid;
+    gap: 24px;
+}
+
+.insight-card {
+    backdrop-filter: saturate(200%) blur(30px);
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 32px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+}
+
+.insight-number {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 32px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.insight-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 16px;
+}
+
+.insight-section {
+    margin-bottom: 20px;
+}
+
+.insight-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 8px;
+}
+
+.insight-content {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.insight-example {
+    background: rgba(0, 102, 204, 0.05);
+    border-left: 3px solid var(--accent-color);
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-top: 12px;
+}
+
+.insight-example-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 8px;
+}
+
+.insight-example-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+.insight-example-text .before {
+    color: #ff3b30;
+    text-decoration: line-through;
+}
+
+.insight-example-text .after {
+    color: #34c759;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 48px;
+    }
+    
+    .comparison-container {
+        grid-template-columns: 1fr;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">王楚杰</a>
+            <div class="nav-links">
+                <a href="index.html#accounts">账号案例</a>
+                <a href="index.html#series">系列案例</a>
+                <a href="index.html#content">内容能力</a>
+                <a href="index.html#ai-tools">AI 能力</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <a href="index.html#content" class="back-button" style="position: fixed; top: 100px; left: 24px; z-index: 100;">
+            <span>←</span>
+            <span>返回主页</span>
+        </a>
+        
+        <div class="page-header">
+            <h1 class="page-title">文案修改前后对比</h1>
+            <p class="page-description">百万点赞文案优化过程展示</p>
+            
+            <div style="text-align: left; margin-top: 32px;">
+                <a href="https://v.douyin.com/VfXb7QsuDz8/" target="_blank" class="video-link">
+                    <span>查看原视频</span>
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <!-- 文案修改前后对比 -->
+            <div class="section">
+                <div class="comparison-container">
+                    <!-- 修改前 -->
+                    <div class="copywriting-box">
+                        <div class="annotation-tips">
+                            <div class="tip-item">
+                                <span style="background: rgba(255, 59, 48, 0.15); padding: 3px 10px; border-radius: 4px; color: #ff3b30; font-weight: 500;">标红</span>
+                                <span style="color: var(--text-secondary);">病句/错误</span>
+                            </div>
+                            <div class="tip-item">
+                                <span style="background: rgba(0, 122, 255, 0.15); padding: 3px 10px; border-radius: 4px; color: #0066CC; font-weight: 500;">标蓝</span>
+                                <span style="color: var(--text-secondary);">可优化</span>
+                            </div>
+                        </div>
+                        <div class="copywriting-label">修改前</div>
+                        <div class="copywriting-text">那些你不知道的皮肤隐藏属性2.0
+
+前段时间跟大家分享了<span class="can-optimize">几个</span>，有隐藏<span class="can-optimize">加成</span>的皮肤
+播放量高达<span class="can-optimize">1千多万</span>
+看来兄弟们对这个还是很有兴趣的
+那今天我就再给大家推荐<span class="can-optimize">几款</span>
+
+看技能特效
+这里以西施为例
+西施最近新出的小龙女皮肤特效真的<span class="error">又美观又好看</span>，
+<span class="error">不过</span>这也导致<span class="can-optimize">西施<span class="error">的</span></span>技能<span class="error">变的</span>非常明显，
+如果我们用原皮，那么西施一技能<span class="can-optimize">颜色</span>就会真的非常淡，
+<span class="error">即使</span>有红色警示圈，<span class="error">只要</span><span class="can-optimize">没有留心看</span>，也根本发现不了
+原皮yyds
+
+我们再来看音效
+这里我们<span class="error">以伽罗为例
+<span class="error">伽罗原皮</span></span>二技能打中人和没打中人的音效，是这个样子的
+<span class="error">有细微地区别，但差别不大</span>
+而这，是太华皮肤的二技能音效
+这个变化真的是非常明显了
+对于伽罗这种短腿脆皮来说，<span class="error">用来</span>探草的重要性<span class="can-optimize">不言而喻</span>
+
+最后，我们再来看一个特殊的皮肤效果，
+这是李白原皮的一技能
+<span class="can-optimize">很明显，</span>李白往哪里位移，一技能的残影就会朝向哪边
+包括李白的千年之狐、凤求凰等，都会有这样的效果，<span class="can-optimize">非常明显</span>
+那利用这一点，我们就可以大致判断技能释放方向，从而躲避一些不必要的风险
+但是，如果李白是荣耀典藏皮肤，那这个小技巧会因为皮肤的残影一直在动，很难判断释放方向，<span class="error">失去作用</span>。</div>
+                    </div>
+                    
+                    <!-- 修改后 -->
+                    <div class="copywriting-box">
+                        <div class="annotation-tips">
+                            <div class="tip-item">
+                                <span style="background: rgba(0, 122, 255, 0.15); padding: 3px 10px; border-radius: 4px; color: #0066CC; font-weight: 500;">蓝色</span>
+                                <span style="color: var(--text-secondary);">优化润色</span>
+                            </div>
+                            <div class="tip-item">
+                                <span style="background: rgba(52, 199, 89, 0.15); padding: 3px 10px; border-radius: 4px; color: #248A3D; font-weight: 500;">绿色</span>
+                                <span style="color: var(--text-secondary);">新增内容</span>
+                            </div>
+                            <div class="tip-item">
+                                <span style="background: rgba(255, 204, 0, 0.12); padding: 3px 10px; border-radius: 4px; color: #996600; font-weight: 500;">黄色</span>
+                                <span style="color: var(--text-secondary);">说明</span>
+                            </div>
+                        </div>
+                        <div class="copywriting-label">修改后</div>
+                        <div class="copywriting-text">那些你不知道的皮肤隐藏属性2.0
+
+前段时间跟大家分享了<span class="optimize">3个</span>，有隐藏<span class="optimize">属性</span>的皮肤，播放量高达<span class="optimize">1000多万</span>
+<span class="add">那今天，我就再给大家推荐3款</span>
+
+<span class="add">首先，我们要知道，皮肤除了显摆外，还能在这几个方面影响对局体验</span>
+<span class="note">分隔视频节奏，明确主题，承上启下</span>
+
+<span class="add">先来看</span>技能特效，这里以西施为例
+这是最近新出的小龙女皮肤，特效<span class="add">超级帅</span>，
+但这，也导致<span class="optimize">她的</span>技能变得非常明显，<span class="add">敌人一下就能看到</span>
+而如果我们用原皮，那么一技能<span class="optimize">范围</span>就会非常淡，
+<span class="optimize">即使</span>有红色警示圈，<span class="optimize">不留心看的话</span>也根本发现不了
+<span class="add">这不仅实战效果好，还能给你省双倍的钱
+哎有人会问，为什么是双倍
+你艾特你女朋友过来看，这不就省了双倍嘛</span>
+<span class="note">增加噱头，帮助提升转发量</span>
+
+<span class="add">说完了特效，</span>我们再来看音效，这里以伽罗为例
+<span class="optimize">原皮</span>二技能打中人和没打中人的音效，是这个样子的
+有细微的区别，但<span class="optimize">看不出来</span>
+而这，是太华皮肤的二技能音效
+<span class="add">前后对比之下，差别真的非常大
+用来探草不要太好用</span>
+而对于伽罗这种短腿脆皮来说，<span class="add">探草有多重要，</span><span class="add">不用我多说了吧</span>
+
+最后，我们<span class="add">来看一个很神奇的</span>技能特效，
+<span class="add">李白</span>
+这是原皮的一技能，李白往哪里位移，一技能的残影就会朝向哪边
+包括千年之狐、凤求凰等，都会有这样的效果
+<span class="add">很多经验丰富的老手，都会利用这一点，来判断李白的走位，无论追击还是躲避都很好用</span>
+但如果是荣耀典藏皮肤，那这个小技巧就<span class="add">直接废了</span>
+因为皮肤的残影一直在动，<span class="add">就像这样
+一直在原地跳舞，根本没有办法判断李白的走向
+这不要太赖皮，真不愧是荣耀典藏</span>
+<span class="note">增加典藏皮肤的效果展示，增加皮肤细节曝光</span>
+
+<span class="add">好，以上就是今天的内容
+兄弟们，你们还知道哪些皮肤有隐藏属性，记得一定要在评论区告诉大家呀！</span>
+<span class="note">增加人设，引起讨论，增加评论量</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 文案认知清单 -->
+            <div class="section">
+                <h2 class="section-title">文案认知清单</h2>
+                <p class="section-subtitle">凝练的文案方法论与认知</p>
+                
+                <div class="insights-grid">
+                    <!-- 认知1 -->
+                    <div class="insight-card">
+                        <span class="insight-number">1</span>
+                        <h3 class="insight-title">多用具体数字</h3>
+                        
+                        <div class="insight-section">
+                            <div class="insight-section-title">方法论</div>
+                            <div class="insight-content">模糊词（很多、几个、好久）会让大脑"打滑"。具体数字（3个、1000万、5秒）像钉子一样把信息钉进用户脑子里。</div>
+                        </div>
+                        
+                        <div class="insight-example">
+                            <div class="insight-example-label">改写示例</div>
+                            <div class="insight-example-text">
+                                <span class="before">几个</span> → <span class="after">3个</span><br>
+                                <span class="before">1千多万</span> → <span class="after">1000多万</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 认知2 -->
+                    <div class="insight-card">
+                        <span class="insight-number">2</span>
+                        <h3 class="insight-title">同义词不连用</h3>
+                        
+                        <div class="insight-section">
+                            <div class="insight-section-title">方法论</div>
+                            <div class="insight-content">形容词越多，力量越弱。如果两个词意思相近，砍掉一个。</div>
+                        </div>
+                        
+                        <div class="insight-example">
+                            <div class="insight-example-label">改写示例</div>
+                            <div class="insight-example-text">
+                                <span class="before">又美观又好看</span> → <span class="after">保留一个意思即可</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 认知3 -->
+                    <div class="insight-card">
+                        <span class="insight-number">3</span>
+                        <h3 class="insight-title">默认主语省略</h3>
+                        
+                        <div class="insight-section">
+                            <div class="insight-section-title">方法论</div>
+                            <div class="insight-content">观众记性没那么差，不用每句话都提醒在看谁。</div>
+                        </div>
+                        
+                        <div class="insight-example">
+                            <div class="insight-example-label">改写示例</div>
+                            <div class="insight-example-text">
+                                <span class="before">西施...西施...西施</span>（出现3次）<br>
+                                → <span class="after">开头提一次，后面直接写"技能变明显""用原皮"</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 认知4 -->
+                    <div class="insight-card">
+                        <span class="insight-number">4</span>
+                        <h3 class="insight-title">尽可能少用关联词</h3>
+                        
+                        <div class="insight-section">
+                            <div class="insight-section-title">方法论</div>
+                            <div class="insight-content">视频的逻辑靠画面和语序推进。关联词太多会显得"书生气"，节奏也不紧。</div>
+                        </div>
+                        
+                        <div class="insight-example">
+                            <div class="insight-example-label">改写示例</div>
+                            <div class="insight-example-text">
+                                <span class="before">即使有红色警示圈，只要没有留心看...</span><br>
+                                → <span class="after">即使有红色警示圈，不留心看的话也根本发现不了</span>（去掉"只要"）
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 认知5 -->
+                    <div class="insight-card">
+                        <span class="insight-number">5</span>
+                        <h3 class="insight-title">表达要口语化</h3>
+                        
+                        <div class="insight-section">
+                            <div class="insight-section-title">方法论</div>
+                            <div class="insight-content">写完读一遍：现实里不会这么说的句子，就改掉。用"废了""绝了""神了"替代"失效""优秀""神奇"。</div>
+                        </div>
+                        
+                        <div class="insight-example">
+                            <div class="insight-example-label">改写示例</div>
+                            <div class="insight-example-text">
+                                <span class="before">不言而喻</span> → <span class="after">不用我多说了吧</span><br>
+                                <span class="before">失去作用</span> → <span class="after">直接废了</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

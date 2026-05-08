@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>王楚杰 - AI 内容运营作品集</title>
+    <link rel="stylesheet" href="common.css">
+    <style>
+/* 修复导航锚点定位 - 为固定导航栏留出空间，并确保内容垂直居中 */
+html {
+    scroll-padding-top: 200px;
+    scroll-behavior: smooth;
+}
+
+/* Hero 区 */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 24px;
+    position: relative;
+    overflow: visible;
+    background: radial-gradient(ellipse at center, rgba(0, 102, 204, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+}
+
+.hero-visual {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ai-orb {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle at 30% 30%, rgba(0, 102, 204, 0.15), rgba(0, 102, 204, 0.03) 50%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(60px);
+    animation: orbPulse 8s ease-in-out infinite, orbRotate 20s linear infinite;
+}
+
+/* Floating Logos - 智能透明度遮罩 */
+.floating-logos {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.floating-logos > * {
+    pointer-events: auto;
+}
+
+/* Logo 基础样式 - Apple 风格 */
+.logo-item {
+    position: fixed;
+    width: 56px;
+    height: 56px;
+    border-radius: 20px;
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.08)) 
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.04));
+    will-change: transform;
+    pointer-events: auto;
+    transition: all 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    opacity: 0.7;
+    z-index: 100;
+    object-fit: contain;
+}
+
+.logo-item:hover {
+    filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.12)) 
+            drop-shadow(0 8px 16px rgba(0, 0, 0, 0.08));
+    transform: scale(1.15) translateY(-4px);
+    z-index: 200;
+    opacity: 1 !important;
+}
+
+/* 随机散落布局 & 多向运动 */
+.logo-claude {
+    top: 12%;
+    left: 22%;
+    animation: float-1 24s ease-in-out infinite alternate;
+}
+
+.logo-gemini {
+    top: 8%;
+    right: 8%;
+    animation: float-2 28s ease-in-out infinite alternate-reverse;
+}
+
+.logo-dify {
+    bottom: 18%;
+    left: 6%;
+    animation: float-3 22s ease-in-out infinite alternate;
+}
+
+.logo-doubao {
+    bottom: 25%;
+    right: 18%;
+    animation: float-4 26s ease-in-out infinite alternate-reverse;
+}
+
+.logo-coze {
+    top: 35%;
+    left: 12%;
+    animation: float-5 25s ease-in-out infinite alternate;
+}
+
+.logo-grok {
+    top: 58%;
+    right: 6%;
+    animation: float-6 27s ease-in-out infinite alternate-reverse;
+}
+
+.logo-openai {
+    top: 15%;
+    right: 35%;
+    animation: float-7 23s ease-in-out infinite alternate;
+}
+
+/* 多向有机悬浮动画 */
+@keyframes float-1 {
+    0% { transform: translate(0, 0) rotate(-5deg) scale(1); }
+    50% { transform: translate(-40px, 50px) rotate(5deg) scale(1.05); }
+    100% { transform: translate(25px, -30px) rotate(-2deg) scale(0.95); }
+}
+
+@keyframes float-2 {
+    0% { transform: translate(0, 0) rotate(5deg) scale(0.95); }
+    50% { transform: translate(30px, 60px) rotate(-5deg) scale(1.05); }
+    100% { transform: translate(-50px, 20px) rotate(3deg) scale(1); }
+}
+
+@keyframes float-3 {
+    0% { transform: translate(0, 0) rotate(-3deg) scale(1.05); }
+    50% { transform: translate(55px, -20px) rotate(4deg) scale(0.95); }
+    100% { transform: translate(-25px, -55px) rotate(-6deg) scale(1); }
+}
+
+@keyframes float-4 {
+    0% { transform: translate(0, 0) rotate(4deg) scale(1); }
+    50% { transform: translate(-45px, 30px) rotate(-4deg) scale(1.05); }
+    100% { transform: translate(35px, -40px) rotate(2deg) scale(0.95); }
+}
+
+@keyframes float-5 {
+    0% { transform: translate(0, 0) rotate(-4deg) scale(0.95); }
+    50% { transform: translate(40px, -35px) rotate(3deg) scale(1.05); }
+    100% { transform: translate(-30px, 50px) rotate(-5deg) scale(1); }
+}
+
+@keyframes float-6 {
+    0% { transform: translate(0, 0) rotate(3deg) scale(1.05); }
+    50% { transform: translate(-55px, -45px) rotate(-3deg) scale(0.95); }
+    100% { transform: translate(20px, 35px) rotate(4deg) scale(1); }
+}
+
+@keyframes float-7 {
+    0% { transform: translate(0, 0) rotate(-2deg) scale(1); }
+    50% { transform: translate(-35px, 45px) rotate(4deg) scale(1.05); }
+    100% { transform: translate(40px, -25px) rotate(-3deg) scale(0.95); }
+}
+
+@keyframes orbPulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+@keyframes orbRotate {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.hero-content {
+    max-width: 980px;
+    position: relative;
+    z-index: 10;
+    animation: heroFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes heroFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.hero-title {
+    font-size: 96px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    background: linear-gradient(135deg, #1d1d1f 0%, #6e6e73 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    color: var(--text-color);
+}
+
+.hero-description {
+    font-size: 21px;
+    color: var(--text-secondary);
+    margin-bottom: 48px;
+    line-height: 1.47059;
+}
+
+/* 滚动指示器 */
+.scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    z-index: 10;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.scroll-indicator svg {
+    width: 24px;
+    height: 24px;
+    opacity: 0.6;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    50% {
+        transform: translateX(-50%) translateY(8px);
+    }
+}
+
+/* 主板块 */
+.main-sections {
+    padding: 120px 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.content-section {
+    margin-bottom: 200px;
+    min-height: calc(100vh - 240px);
+    padding-bottom: 80px;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 80px;
+    position: relative;
+    z-index: 1;
+}
+
+.section-title {
+    font-size: 56px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text-color);
+}
+
+.section-subtitle {
+    font-size: 21px;
+    color: var(--text-secondary);
+}
+
+/* 账号案例网格 */
+.accounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.account-card {
+    backdrop-filter: saturate(180%) blur(20px);
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+    transition: all 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    min-height: 480px;
+}
+
+.account-card::after {
+    content: '查看详情 →';
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent-color);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.account-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+}
+
+.account-card:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.account-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.account-icon {
+    font-size: 48px;
+}
+
+/* 账号头像样式 */
+.account-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.account-title {
+    font-size: 28px;
+    font-weight: 700;
+    flex: 1;
+}
+
+.account-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.tag {
+    padding: 6px 12px;
+    background: rgba(0, 102, 204, 0.1);
+    border: 1px solid rgba(0, 102, 204, 0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.account-stage {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(0, 102, 204, 0.1);
+    border: 1px solid rgba(0, 102, 204, 0.2);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--accent-color);
+    margin-bottom: 24px;
+}
+
+.account-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-item {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.account-description {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.view-detail {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: rgba(0, 102, 204, 0.1);
+    border-radius: 12px;
+    font-size: 16px;
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+/* 系列案例网格 */
+.series-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.series-card {
+    backdrop-filter: saturate(180%) blur(20px);
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 32px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+    transition: all 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    text-decoration: none;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.series-card::after {
+    content: '查看详情 →';
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent-color);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.series-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+}
+
+.series-card:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 系列卡片头像样式 */
+.series-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* 系列卡片缩略图样式 */
+.series-thumbnail {
+    width: 100%;
+    aspect-ratio: 9/16;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.series-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+/* 内容卡片图标 */
+.content-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+/* 工具图标样式 */
+.tool-icon {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 16px;
+}
+}
+
+/* 内容图标图片样式 */
+.content-icon-img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+
+/* 内容卡片特殊布局 */
+.content-card .content-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.content-icon-large {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 16px;
+    flex-shrink: 0;
+}
+
+.content-info {
+    flex: 1;
+}
+
+.content-card .series-title {
+    margin-bottom: 8px;
+}
+
+.content-card .series-desc {
+    margin-bottom: 0;
+}
+
+.series-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 12px;
+}
+
+.series-desc {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+.series-stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 12px 16px;
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+/* 隐藏旧的 view-detail 元素 */
+.view-detail {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 56px;
+    }
+    
+    .hero-subtitle {
+        font-size: 24px;
+    }
+    
+    .section-title {
+        font-size: 40px;
+    }
+    
+    .account-card {
+        padding: 32px 24px;
+    }
+    
+    .accounts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .series-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* 移动端 Logo 调整 */
+    .logo-item {
+        width: 44px !important;
+        height: 44px !important;
+    }
+    
+    .floating-logos {
+        display: none;
+    }
+    
+    .scroll-indicator {
+        bottom: 20px;
+        font-size: 11px;
+    }
+    
+    .account-card::after,
+    .series-card::after {
+        font-size: 12px;
+        bottom: 16px;
+        right: 16px;
+    }
+}
+
+/* 带背景图的系列卡片 */
+.series-with-bg {
+    padding: 0 !important;
+    background: transparent !important;
+    min-height: 400px;
+}
+
+.series-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.series-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0) 30%,
+        rgba(255, 255, 255, 0.8) 45%,
+        rgba(255, 255, 255, 1) 55%,
+        rgba(255, 255, 255, 1) 100%
+    );
+}
+
+.series-content {
+    position: relative;
+    z-index: 2;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 400px;
+}
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">王楚杰</a>
+            <div class="nav-links">
+                <a href="#accounts">账号运营案例</a>
+                <a href="#series">内容创意系列</a>
+                <a href="#content">内容基本功</a>
+                <a href="#ai-tools">自研AI工具</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero 区 -->
+    <section class="hero">
+        <!-- Hero 视觉效果 -->
+        <div class="hero-visual">
+            <!-- AI 光球 -->
+            <div class="ai-orb"></div>
+            
+            <!-- 浮动 Logo -->
+            <div class="floating-logos">
+                <img src="ai-logo/claude-color.png" alt="Claude" class="logo-item logo-claude">
+                <img src="ai-logo/gemini-color.png" alt="Gemini" class="logo-item logo-gemini">
+                <img src="ai-logo/dify-color.png" alt="Dify" class="logo-item logo-dify">
+                <img src="ai-logo/doubao-color.png" alt="豆包" class="logo-item logo-doubao">
+                <img src="ai-logo/coze.png" alt="扣子" class="logo-item logo-coze">
+                <img src="ai-logo/grok.png" alt="Grok" class="logo-item logo-grok">
+                <img src="ai-logo/openai.png" alt="OpenAI" class="logo-item logo-openai">
+            </div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">懂爆款，也懂AI</h1>
+            <h2 class="hero-subtitle">王楚杰 | 内容运营 ✖️ AI 生产力探索者</h2>
+            <p class="hero-description">用"数据模型"代替"灵感依赖"，用"内容公式"产出"稳定爆款"，用"自动化AI"重构"非标生产"。</p>
+        </div>
+        
+        <!-- 滚动指示器 -->
+        <div class="scroll-indicator">
+            <span>向下滚动</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- 主板块 -->
+    <section class="main-sections">
+        <!-- 账号运营案例 -->
+        <div class="content-section" id="accounts">
+            <div class="section-header">
+                <h2 class="section-title">账号运营案例</h2>
+                <p class="section-subtitle">从0到1，从1到10的实战经验</p>
+            </div>
+            
+            <div class="accounts-grid">
+                <!-- 史上醉 -->
+                <a href="ssz_detail.html" class="account-card">
+                    <div class="account-header">
+                        <img src="account-icons/史上醉.jpeg" alt="史上醉" class="account-avatar">
+                        <h2 class="account-title">史上醉</h2>
+                    </div>
+                    <div class="account-tags">
+                        <span class="tag">王者荣耀</span>
+                        <span class="tag">游戏</span>
+                    </div>
+                    <div class="account-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">单期最高点赞</div>
+                            <div class="stat-value">100万+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">爆款视频</div>
+                            <div class="stat-value">20+</div>
+                        </div>
+                    </div>
+                    <p class="account-description">
+                        扩充赛道，从单一"极致数据"赛道拓展到教学、皮肤测评等蓝海领域，多系列并行，流量高峰不断出现。
+                    </p>
+                </a>
+                
+                <!-- GM的秘密基地 -->
+                <a href="gm_detail.html" class="account-card">
+                    <div class="account-header">
+                        <img src="account-icons/gm的秘密基地.jpeg" alt="GM的秘密基地" class="account-avatar">
+                        <h2 class="account-title">GM的秘密基地</h2>
+                    </div>
+                    <div class="account-tags">
+                        <span class="tag">玩具</span>
+                        <span class="tag">智力游戏</span>
+                    </div>
+                    <div class="account-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">单期最高播放</div>
+                            <div class="stat-value">283万</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">涨粉</div>
+                            <div class="stat-value">300万+</div>
+                        </div>
+                    </div>
+                    <p class="account-description">
+                        通过扩展选题渠道（从3个到51个）和挖掘流量系列，实现流量上升和更新量增加，爆款高峰和频率显著提升。
+                    </p>
+                </a>
+                
+                <!-- 超级嘎嘎 -->
+                <a href="cjgg_detail.html" class="account-card">
+                    <div class="account-header">
+                        <img src="account-icons/超级嘎嘎.jpeg" alt="超级嘎嘎" class="account-avatar">
+                        <h2 class="account-title">超级嘎嘎</h2>
+                    </div>
+                    <div class="account-tags">
+                        <span class="tag">KPL</span>
+                        <span class="tag">王者赛事</span>
+                        <span class="tag">游戏</span>
+                    </div>
+                    <div class="account-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">首月曝光</div>
+                            <div class="stat-value">1500万</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">月涨粉</div>
+                            <div class="stat-value">10万+</div>
+                        </div>
+                    </div>
+                    <p class="account-description">
+                        将内容视角从单纯的KPL人物故事扩充到选手动态、娱乐八卦等，沉淀出爆款系列和日常系列，顺利完成KPI。
+                    </p>
+                </a>
+            </div>
+        </div>
+
+        <!-- 内容创意系列 -->
+        <div class="content-section" id="series">
+            <div class="section-header">
+                <h2 class="section-title">内容创意系列</h2>
+                <p class="section-subtitle">爆款内容系列的创意与迭代</p>
+            </div>
+            
+            <div class="series-grid">
+                <a href="series_self.html" class="series-card series-with-bg">
+                    <div class="series-bg" style="background-image: url('series_self_thumbnail.png');"></div>
+                    <div class="series-content">
+                        <h3 class="series-title">自孵化账号创意系列</h3>
+                        <p class="series-desc">史上醉的地图系列 - 创意是旧元素的重新组合</p>
+                        <div class="series-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">首发数据</div>
+                                <div class="stat-value">226万赞</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">后续均赞</div>
+                                <div class="stat-value">80万+</div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="series_supplier.html" class="series-card series-with-bg">
+                    <div class="series-bg" style="background-image: url('series_supplier_thumbnail.png');"></div>
+                    <div class="series-content">
+                        <h3 class="series-title">供应商账号创意系列</h3>
+                        <p class="series-desc">伤感文学系列 - 从洞察到迭代的完整流程</p>
+                        <div class="series-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">均赞数据</div>
+                                <div class="stat-value">10万+</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">数据排名</div>
+                                <div class="stat-value">前10%</div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 内容基本功 -->
+        <div class="content-section" id="content">
+            <div class="section-header">
+                <h2 class="section-title">内容基本功</h2>
+                <p class="section-subtitle">封面设计与文案创作能力</p>
+            </div>
+            
+            <div class="series-grid">
+                <a href="cover.html" class="series-card content-card">
+                    <div class="content-header">
+                        <img src="tool-icons/封面.jpg" alt="封面设计" class="content-icon-large">
+                        <div class="content-info">
+                            <h3 class="series-title">封面展示</h3>
+                            <p class="series-desc">从素材到成品的视觉设计能力</p>
+                        </div>
+                    </div>
+                    <div class="series-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">从0到1</div>
+                            <div class="stat-value">素材筛选到成品输出</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">案例数量</div>
+                            <div class="stat-value">20+</div>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="copywriting.html" class="series-card content-card">
+                    <div class="content-header">
+                        <img src="tool-icons/文案.jpg" alt="文案创作" class="content-icon-large">
+                        <div class="content-info">
+                            <h3 class="series-title">文案展示</h3>
+                            <p class="series-desc">从修改到方法论的文案能力</p>
+                        </div>
+                    </div>
+                    <div class="series-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">文案认知</div>
+                            <div class="stat-value">5条</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">实战案例</div>
+                            <div class="stat-value">完整对比</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 自研AI工具 -->
+        <div class="content-section" id="ai-tools">
+            <div class="section-header">
+                <h2 class="section-title">自研AI工具</h2>
+                <p class="section-subtitle">智能化内容生成工具</p>
+            </div>
+            
+            <div class="accounts-grid">
+                <a href="opening-ai.html" class="account-card">
+                    <div class="account-header">
+                        <img src="tool-icons/开头.jpg" alt="开头方案" class="tool-icon">
+                        <h2 class="account-title">开头方案生成工具</h2>
+                    </div>
+                    <div class="account-tags">
+                        <span class="tag">千万爆款支撑</span>
+                        <span class="tag">每个方案都有理可依</span>
+                    </div>
+                    <div class="account-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">爆款案例库</div>
+                            <div class="stat-value">200+</div>
+                        </div>
+                    </div>
+                    <p class="account-description">
+                        基于视频看点智能生成多样化开头方案，通过类型化思维和对标学习，从200+千万爆款案例中提取创意灵感。
+                    </p>
+                </a>
+
+                <a href="topic-ai.html" class="account-card">
+                    <div class="account-header">
+                        <img src="tool-icons/选题.jpg" alt="选题库" class="tool-icon">
+                        <h2 class="account-title">自动化选题库工具</h2>
+                    </div>
+                    <div class="account-tags">
+                        <span class="tag">突破编导信息茧房</span>
+                    </div>
+                    <div class="account-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">选题分析维度</div>
+                            <div class="stat-value">12+</div>
+                        </div>
+                    </div>
+                    <p class="account-description">
+                        输入游戏名，自动生成"天才设计"系列选题详情。多渠道搜索验证，AI评审打分，基于27个历史视频数据评估爆款潜力。
+                    </p>
+                </a>
+
+                <a href="hotspot-ai.html" class="account-card">
+                    <div class="account-header">
+                        <img src="tool-icons/灵感.jpg" alt="热点灵感" class="tool-icon">
+                        <h2 class="account-title">热点灵感涌现工具</h2>
+                    </div>
+                    <div class="account-tags">
+                        <span class="tag">可无限复用的选题库</span>
+                        <span class="tag">每张卡片都是确定的流量</span>
+                    </div>
+                    <div class="account-stats">
+                    </div>
+                    <p class="account-description">
+                        智能识别热点话题,自动生成热点卡片。多模态视频识别，提取热点DNA，智能归类视频，把握内容趋势。
+                    </p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+    // 控制 logo 在滚动时平滑淡出
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const heroHeight = window.innerHeight;
+        const logos = document.querySelectorAll('.logo-item');
+        
+        // 当滚动超过 Hero 区域的 50% 时，开始淡出 logo
+        if (scrollTop > heroHeight * 0.5) {
+            const fadeStart = heroHeight * 0.5;
+            const fadeEnd = heroHeight * 0.9;
+            const fadeProgress = Math.min((scrollTop - fadeStart) / (fadeEnd - fadeStart), 1);
+            const opacity = 0.7 * (1 - fadeProgress);
+            
+            logos.forEach(logo => {
+                if (!logo.matches(':hover')) {
+                    logo.style.opacity = Math.max(opacity, 0);
+                    logo.style.pointerEvents = opacity < 0.1 ? 'none' : 'auto';
+                }
+            });
+        } else {
+            logos.forEach(logo => {
+                if (!logo.matches(':hover')) {
+                    logo.style.opacity = '0.7';
+                    logo.style.pointerEvents = 'auto';
+                }
+            });
+        }
+    });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自孵化系列案例 - 王楚杰</title>
+    <link rel="stylesheet" href="common.css">
+    <style>
+.detail-container {
+    min-height: 100vh;
+    padding: 120px 24px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.detail-header {
+    margin-bottom: 48px;
+}
+
+.detail-title {
+    font-size: 64px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.015em;
+}
+
+.detail-subtitle {
+    font-size: 21px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.detail-quote {
+    font-size: 17px;
+    font-style: italic;
+    color: var(--text-secondary);
+    padding-left: 24px;
+    border-left: 4px solid var(--accent-color);
+    margin-top: 24px;
+}
+
+.section {
+    margin-bottom: 64px;
+}
+
+.section-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-content {
+    background: var(--card-bg);
+    backdrop-filter: saturate(200%) blur(30px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 32px;
+    padding: 40px;
+}
+
+.subsection {
+    margin-bottom: 40px;
+}
+
+.subsection:last-child {
+    margin-bottom: 0;
+}
+
+.subsection-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--accent-color);
+}
+
+.subsection-content {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.subsection-content p {
+    margin-bottom: 16px;
+}
+
+.subsection-content strong {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.highlight {
+    background: rgba(0, 102, 204, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+/* 爆款展示 - 横向滚动 */
+.hit-series {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    padding: 16px 4px 32px 4px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.hit-series::-webkit-scrollbar {
+    display: none;
+}
+
+/* 视频卡片主体 */
+.hit-item {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 10px;
+    width: 180px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.02);
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.hit-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
+}
+
+.hit-item:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 媒体区域 */
+.hit-item-image {
+    width: 100%;
+    aspect-ratio: 9/16;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    background-color: #f5f5f7;
+}
+
+.hit-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hit-item:hover .hit-item-image img {
+    transform: scale(1.05);
+}
+
+.hit-item:active .hit-item-image img {
+    transform: scale(1);
+}
+
+/* 底部渐变遮罩 */
+.video-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+/* 毛玻璃播放按钮 */
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.play-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 3px;
+}
+
+.hit-item:hover .play-button {
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* 视频时长标签 */
+.video-duration {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 6px;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* 视频标题和数据 */
+.hit-item-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.hit-item-stats {
+    font-size: 12px;
+    color: #86868b;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* 对比图展示 */
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.comparison-item {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.comparison-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 12px;
+}
+
+.comparison-image {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f7;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.comparison-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* 模块卡片 */
+.module-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 24px;
+}
+
+.module-card {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.module-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 12px;
+}
+
+.module-desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .detail-title {
+        font-size: 40px;
+        letter-spacing: -0.015em;
+}
+    
+    .section-content {
+        padding: 24px;
+    }
+    
+    .hit-item {
+        width: 160px;
+    }
+    
+    .play-button {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .play-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">王楚杰</a>
+            <div class="nav-links">
+                <a href="index.html#accounts">账号案例</a>
+                <a href="index.html#series">系列案例</a>
+                <a href="index.html#content">内容能力</a>
+                <a href="index.html#ai-tools">AI 能力</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="detail-container">
+        <a href="index.html#series" class="back-button" style="position: fixed; top: 100px; left: 24px; z-index: 100;">
+            <span>←</span>
+            <span>返回主页</span>
+        </a>
+
+        <div class="detail-header">
+            <h1 class="detail-title">《史上醉》｜地图系列</h1>
+        </div>
+
+        <!-- 系列概述 -->
+        <div class="section">
+            <h2 class="section-title">系列数据表现</h2>
+            <div class="section-content">
+                <p class="subsection-content">
+                    该系列于 <strong>2024年12月6日</strong> 发出，首发 <span class="highlight">226万赞</span>，后续内容均赞维持在 <span class="highlight">80万+</span> 左右。
+                </p>
+                
+                <div class="hit-series">
+                    <a href="https://v.douyin.com/TbXuZZPj6gA/" target="_blank" class="hit-item">
+                        <div class="hit-item-image">
+                            <img src="series_self_video1.png" alt="地图系列 #1">
+                            <div class="video-overlay"></div>
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                    <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://v.douyin.com/xFMCHGH2rDw/" target="_blank" class="hit-item">
+                        <div class="hit-item-image">
+                            <img src="series_self_video2.png" alt="地图系列 #2">
+                            <div class="video-overlay"></div>
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                    <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://v.douyin.com/YInF9I6vDq4/" target="_blank" class="hit-item">
+                        <div class="hit-item-image">
+                            <img src="series_self_video3.png" alt="地图系列 #3">
+                            <div class="video-overlay"></div>
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                    <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://v.douyin.com/6xwm6hFC9o4/" target="_blank" class="hit-item">
+                        <div class="hit-item-image">
+                            <img src="series_self_video4.png" alt="地图系列 #4">
+                            <div class="video-overlay"></div>
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                    <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://v.douyin.com/hblUJMkdqaU/" target="_blank" class="hit-item">
+                        <div class="hit-item-image">
+                            <img src="series_self_video5.png" alt="地图系列 #5">
+                            <div class="video-overlay"></div>
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                    <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 创作过程 -->
+        <div class="section">
+            <h2 class="section-title">系列创作过程</h2>
+            <div class="section-content">
+                <!-- 1️⃣ 痛点洞察 -->
+                <div class="subsection">
+                    <h3 class="subsection-title">1️⃣ 痛点洞察</h3>
+                    <div class="subsection-content">
+                        <p><strong>大盘分析：</strong></p>
+                        <p>在2024年12月左右，王者荣耀英雄"杨戬"因为底层代码陈旧的问题，很容易打出各种离谱、违背常理的搞笑操作，市场上出现了大量的<span class="highlight">低粉爆款</span>。</p>
+                        <p>因此在当时，用户对于【杨戬离谱操作】这一内容，拥有极高的吐槽和讨论需求，即拥有<span class="highlight">确定性的市场需求</span>。</p>
+                        <div class="hit-series" style="margin-top: 12px;">
+                            <a href="https://v.douyin.com/i9rEtT1CVhU/" target="_blank" class="hit-item" style="width: 280px;">
+                                <div class="hit-item-image" style="aspect-ratio: 16/9;">
+                                    <img src="series_self_reference.png" alt="低粉爆款示例">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2️⃣ 内容重组 -->
+                <div class="subsection">
+                    <h3 class="subsection-title">2️⃣ 内容重组</h3>
+                    <div class="subsection-content">
+                        <p><strong>内容元素：</strong>杨戬的离谱操作</p>
+                        <p><strong>形式元素：</strong>一个KPL小号发了一期盘点KPL名场面的视频（<a href="https://v.douyin.com/DPSqgEyGwhU/" target="_blank" style="color: var(--accent-color);">参考视频</a>），该系列内容小众，素材的取名太垂，即便如此，流量依旧不错，说明形式上也是加分的。</p>
+                        <p><strong>制作优化：</strong>基于以上地图形式，在栏包、素材编排和取名上要做区分：</p>
+                        <ul style="list-style: none; padding-left: 0;">
+                            <li style="padding-left: 24px; position: relative; margin-bottom: 8px;">
+                                <span style="position: absolute; left: 8px; color: var(--accent-color); font-weight: bold;">•</span>
+                                栏目要有<span class="highlight">明确的主题</span>
+                            </li>
+                            <li style="padding-left: 24px; position: relative; margin-bottom: 8px;">
+                                <span style="position: absolute; left: 8px; color: var(--accent-color); font-weight: bold;">•</span>
+                                素材取名要<span class="highlight">泛化</span>
+                            </li>
+                            <li style="padding-left: 24px; position: relative; margin-bottom: 8px;">
+                                <span style="position: absolute; left: 8px; color: var(--accent-color); font-weight: bold;">•</span>
+                                素材之间要有<span class="highlight">递进关联</span>
+                            </li>
+                            <li style="padding-left: 24px; position: relative;">
+                                <span style="position: absolute; left: 8px; color: var(--accent-color); font-weight: bold;">•</span>
+                                编排要遵循<span class="highlight">微笑曲线法则</span>
+                            </li>
+                        </ul>
+                        <p style="margin-top: 20px;"><strong>方向落地：</strong></p>
+                        <p>确定的杨戬素材需求（元素a）+ 被验证过的盘点形式（元素b）+ 细节处理 ➡️ 全新的地图系列</p>
+                        
+                        <div class="comparison-grid">
+                            <div class="comparison-item">
+                                <div class="comparison-label">原片对标</div>
+                                <div class="comparison-image">
+                                    <img src="series_self_compare1.png" alt="原片对标1">
+                                </div>
+                            </div>
+                            <div class="comparison-item">
+                                <div class="comparison-label">细节优化</div>
+                                <div class="comparison-image">
+                                    <img src="series_self_compare2.png" alt="细节优化1">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="comparison-grid" style="margin-top: 20px;">
+                            <div class="comparison-item">
+                                <div class="comparison-label">原片对标</div>
+                                <div class="comparison-image">
+                                    <img src="series_self_compare3.png" alt="原片对标2">
+                                </div>
+                            </div>
+                            <div class="comparison-item">
+                                <div class="comparison-label">细节优化</div>
+                                <div class="comparison-image">
+                                    <img src="series_self_compare4.png" alt="细节优化2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3️⃣ 结构封装 -->
+                <div class="subsection">
+                    <h3 class="subsection-title">3️⃣ 结构封装</h3>
+                    <div class="subsection-content">
+                        <p><strong>该系列的创意公式：</strong></p>
+                        
+                        <div class="module-list">
+                            <div class="module-card">
+                                <div class="module-title">模块一：素材定调</div>
+                                <div class="module-desc">有流量且主题一致的素材，确保主题聚焦</div>
+                            </div>
+                            
+                            <div class="module-card">
+                                <div class="module-title">模块二：地图展示与主题揭示</div>
+                                <div class="module-desc">开头呈现各种素材名，并点出明确主题</div>
+                                <div class="comparison-image" style="margin-top: 16px;">
+                                    <img src="series_self_module3.png" alt="地图展示与主题揭示示例">
+                                </div>
+                            </div>
+                            
+                            <div class="module-card">
+                                <div class="module-title">模块三："梗标签"前置，建立预期</div>
+                                <div class="module-desc">每个片段切入的第一帧，用通俗易懂、有网感梗点的语言呈现。（如："我的代码在你之上"、"手法诠释一切"）</div>
+                                <div class="comparison-image" style="margin-top: 16px;">
+                                    <img src="series_self_module4.png" alt="梗标签前置示例">
+                                </div>
+                            </div>
+                            
+                            <div class="module-card">
+                                <div class="module-title">模块四：无缝块切</div>
+                                <div class="module-desc">素材爆点一结束，20-25帧后切入下一个片段的"标签"。通过不断堆叠短平快的刺激，让观众停留，提升完播率。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

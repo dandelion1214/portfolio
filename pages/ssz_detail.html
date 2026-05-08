@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>史上醉 - 案例分析</title>
+    <link rel="stylesheet" href="common.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+.detail-container {
+    min-height: 100vh;
+    padding: 120px 24px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.detail-header {
+    margin-bottom: 48px;
+}
+
+.title-and-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+.detail-title {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.account-links {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.notice {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 48px;
+    text-align: center;
+}
+
+.notice-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #f57c00;
+    margin-bottom: 8px;
+}
+
+.notice-text {
+    font-size: 16px;
+    color: var(--text-secondary);
+}
+
+.section-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.section {
+    margin-bottom: 64px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    letter-spacing: -0.5px;
+}
+
+.section-content {
+    background: var(--card-bg);
+    backdrop-filter: saturate(200%) blur(30px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 32px;
+    padding: 40px;
+}
+
+/* 核心卡片设计 */
+.apple-card {
+    background: var(--card-bg);
+    backdrop-filter: saturate(200%) blur(30px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+/* 底部洞察网格区 */
+.insights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 24px;
+}
+
+/* 洞察对比卡片 */
+.insight-card {
+    background: #FBFBFD;
+    border-radius: 16px;
+    padding: 20px;
+    transition: transform 0.2s ease;
+}
+
+.insight-card:hover {
+    transform: translateY(-2px);
+}
+
+.insight-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.insight-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.insight-desc {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.insight-desc strong {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+/* 红底高亮（拐点前-负面） */
+.highlight-red {
+    background: rgba(255, 59, 48, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #D70015;
+    font-weight: 500;
+}
+
+/* 绿底高亮（拐点后-正面） */
+.highlight-green {
+    background: rgba(52, 199, 89, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #248A3D;
+    font-weight: 500;
+}
+
+/* 合并的大板块样式 */
+.combined-section {
+    background: var(--card-bg);
+    backdrop-filter: saturate(200%) blur(30px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 32px;
+    padding: 48px;
+    margin-top: 24px;
+}
+
+.subsection {
+    margin-bottom: 40px;
+}
+
+.subsection:last-child {
+    margin-bottom: 0;
+}
+
+.subsection-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--accent-color);
+}
+
+.subsection-content {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.subsection-content p {
+    margin-bottom: 12px;
+}
+
+.subsection-content ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.subsection-content li {
+    padding-left: 24px;
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.subsection-content li:before {
+    content: "•";
+    position: absolute;
+    left: 8px;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.highlight {
+    background: rgba(0, 102, 204, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.account-links {
+    display: flex;
+    gap: 12px;
+}
+
+.account-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
+    border: 0.5px solid rgba(0, 0, 0, 0.04);
+    border-radius: 98px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.account-link:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.account-link-icon {
+    font-size: 20px;
+}
+
+.chart-note {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 16px;
+}
+
+/* 爆款展示 - 横向滚动 */
+.hit-series {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    padding: 16px 4px 32px 4px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.hit-series::-webkit-scrollbar {
+    display: none;
+}
+
+/* 视频卡片主体 */
+.hit-item {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 10px;
+    width: 180px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.02);
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.hit-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
+}
+
+.hit-item:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 媒体区域 */
+.hit-item-image {
+    width: 100%;
+    aspect-ratio: 9/16;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    background-color: #f5f5f7;
+}
+
+.hit-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hit-item:hover .hit-item-image img {
+    transform: scale(1.05);
+}
+
+.hit-item:active .hit-item-image img {
+    transform: scale(1);
+}
+
+/* 底部渐变遮罩 */
+.video-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+/* 毛玻璃播放按钮 */
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.play-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 3px;
+}
+
+.hit-item:hover .play-button {
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* 视频时长标签 */
+.video-duration {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 6px;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* 内容区域 */
+.hit-item-content {
+    padding: 0 4px 4px 4px;
+}
+
+.hit-item-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hit-item-desc {
+    font-size: 12px;
+    color: #86868b;
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .detail-title {
+        font-size: 32px;
+        letter-spacing: -0.015em;
+    }
+    
+    .title-and-link {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .section-content {
+        padding: 24px;
+    }
+    
+    .account-links {
+        width: 100%;
+    }
+    
+    .hit-item {
+        width: 160px;
+    }
+    
+    .play-button {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .play-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .insights-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .apple-card {
+        padding: 24px;
+    }
+}
+
+/* 数据表格样式 */
+.data-table-container {
+    margin: 24px 0;
+    overflow-x: auto;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 20px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.data-table thead {
+    background: rgba(0, 122, 255, 0.08);
+}
+
+.data-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-color);
+    border-bottom: 2px solid rgba(0, 122, 255, 0.2);
+}
+
+.data-table td {
+    padding: 10px 16px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.data-table tbody tr:hover {
+    background: rgba(0, 122, 255, 0.04);
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table .number-cell {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+}
+
+.data-table .total-row {
+    font-weight: 600;
+    background: rgba(0, 122, 255, 0.05);
+}
+
+.data-table .highlight-row {
+    background: rgba(0, 122, 255, 0.08);
+}
+
+.data-table .highlight-row:hover {
+    background: rgba(0, 122, 255, 0.12);
+}
+
+.table-note {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 12px;
+    font-style: italic;
+}
+
+/* 选题日历样式 */
+.calendar-container {
+    margin: 32px 0;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.calendar-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.calendar-week:last-child {
+    margin-bottom: 0;
+}
+
+.calendar-day {
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+}
+
+.calendar-day.highlight-day {
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.05) 0%, rgba(0, 122, 255, 0.02) 100%);
+    border: 1.5px solid rgba(0, 122, 255, 0.3);
+}
+
+.calendar-day:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.day-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.day-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #007AFF;
+    background: rgba(0, 122, 255, 0.1);
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.video-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.calendar-video {
+    display: block;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.calendar-video img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    display: block;
+}
+
+.play-button-small {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.play-icon-small {
+    width: 14px;
+    height: 14px;
+    margin-left: 2px;
+    color: #000;
+}
+
+.calendar-video:hover .play-button-small {
+    transform: translate(-50%, -50%) scale(1.1);
+    background: white;
+}
+
+@media (max-width: 1024px) {
+    .calendar-week {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .calendar-week {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .calendar-day {
+        min-height: 100px;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">王楚杰</a>
+            <div class="nav-links">
+                <a href="index.html#accounts">账号案例</a>
+                <a href="index.html#series">系列案例</a>
+                <a href="index.html#content">内容能力</a>
+                <a href="index.html#ai-tools">AI 能力</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="detail-container">
+        <a href="index.html#accounts" class="back-button" style="position: fixed; top: 100px; left: 24px; z-index: 100;">
+            <span>←</span>
+            <span>返回主页</span>
+        </a>
+
+        <div class="detail-header">
+            <div class="title-and-link">
+                <h1 class="detail-title">《史上醉》 | 账号从1到10的运营阶段</h1>
+                
+                <!-- 账号链接 -->
+                <div class="account-links">
+                    <a href="https://www.douyin.com/user/MS4wLjABAAAASAsba8TWgHzqgRgYb8w0x23Fp84n5kX3Pis2xzDGrz0r26CqwCCAaRSSyimM-PJO?from_tab_name=main" target="_blank" class="account-link">
+                        <img src="douyin.png" alt="抖音" style="width: 20px; height: 20px;">
+                        <span>抖音主页</span>
+                    </a>
+                    <a href="https://space.bilibili.com/1767112114?spm_id_from=333.337.0.0" target="_blank" class="account-link">
+                        <img src="bilibili.png" alt="B站" style="width: 20px; height: 20px;">
+                        <span>B站主页</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 账号阶段图表 -->
+        <div class="section">
+            <div class="section-title-row">
+                <h2 class="section-title">
+                    <span>账号内容播放与更新趋势</span>
+                </h2>
+            </div>
+            <div class="section-content apple-card">
+                <!-- 图表区 -->
+                <div class="chart-container">
+                    <canvas id="sszChart"></canvas>
+                </div>
+
+                <!-- 洞察分析区 (拐点前后对比) -->
+                <div class="insights-grid">
+                    <div class="insight-card before">
+                        <div class="insight-header">
+                            <span class="insight-title">拐点前</span>
+                        </div>
+                        <p class="insight-desc">起号阶段，单系列杀出一条路，但<span class="highlight-red">单系列选题即将枯竭</span>。</p>
+                    </div>
+                    
+                    <div class="insight-card after">
+                        <div class="insight-header">
+                            <span class="insight-title">拐点后</span>
+                        </div>
+                        <p class="insight-desc"><span class="highlight-green">更新量增加</span>，<span class="highlight-green">多系列并行</span>，<span class="highlight-green">流量高峰</span>不断出现。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题分析与解决（合并板块） -->
+        <div class="section">
+            <h2 class="section-title">
+                <span>拐点措施</span>
+            </h2>
+            <div class="combined-section">
+                <!-- 问题归因 -->
+                <div class="subsection">
+                    <h3 class="subsection-title">问题归因</h3>
+                    <div class="subsection-content">
+                        <p><strong>业务背景：</strong>有王者体量助力，内容流量表现一直很好，但系列单一，可用的优质选题少；90%的内容和素材都是自己想，没有借力王者的生态和素材</p>
+                        <p><strong>问题指向：</strong>前期产能不足，系列单一，内容局限在"极致数据"这一条赛道</p>
+                        <p><strong>根本原因：</strong>可更新系列少，赛道窄</p>
+                    </div>
+                </div>
+
+                <!-- 解决措施 -->
+                <div class="subsection">
+                    <h3 class="subsection-title">解决措施</h3>
+                    <div class="subsection-content">
+                        <p><strong>1. 扩充赛道：</strong>调研王者生态发现，"<span class="highlight">游戏教学</span>""<span class="highlight">皮肤测评</span>""<span class="highlight">英雄/阵容推荐</span>"等优质赛道仍有潜力</p>
+                        
+                        <div class="data-table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>内容标签</th>
+                                        <th class="number-cell">30-50w</th>
+                                        <th class="number-cell">50-100w</th>
+                                        <th class="number-cell">100w以上</th>
+                                        <th class="number-cell">总计</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>其他内容</td>
+                                        <td class="number-cell">577</td>
+                                        <td class="number-cell">416</td>
+                                        <td class="number-cell">173</td>
+                                        <td class="number-cell">1166</td>
+                                    </tr>
+                                    <tr>
+                                        <td>搞笑娱乐</td>
+                                        <td class="number-cell">57</td>
+                                        <td class="number-cell">34</td>
+                                        <td class="number-cell">6</td>
+                                        <td class="number-cell">97</td>
+                                    </tr>
+                                    <tr>
+                                        <td>段位上分</td>
+                                        <td class="number-cell">466</td>
+                                        <td class="number-cell">280</td>
+                                        <td class="number-cell">90</td>
+                                        <td class="number-cell">836</td>
+                                    </tr>
+                                    <tr>
+                                        <td>游戏互动</td>
+                                        <td class="number-cell">342</td>
+                                        <td class="number-cell">297</td>
+                                        <td class="number-cell">97</td>
+                                        <td class="number-cell">736</td>
+                                    </tr>
+                                    <tr class="highlight-row">
+                                        <td>游戏教学</td>
+                                        <td class="number-cell">106</td>
+                                        <td class="number-cell">69</td>
+                                        <td class="number-cell">24</td>
+                                        <td class="number-cell">199</td>
+                                    </tr>
+                                    <tr>
+                                        <td>游戏解说</td>
+                                        <td class="number-cell">29</td>
+                                        <td class="number-cell">11</td>
+                                        <td class="number-cell">5</td>
+                                        <td class="number-cell">45</td>
+                                    </tr>
+                                    <tr class="highlight-row">
+                                        <td>皮肤展示</td>
+                                        <td class="number-cell">33</td>
+                                        <td class="number-cell">16</td>
+                                        <td class="number-cell">7</td>
+                                        <td class="number-cell">56</td>
+                                    </tr>
+                                    <tr class="highlight-row">
+                                        <td>英雄测评</td>
+                                        <td class="number-cell">28</td>
+                                        <td class="number-cell">17</td>
+                                        <td class="number-cell">5</td>
+                                        <td class="number-cell">50</td>
+                                    </tr>
+                                    <tr class="highlight-row">
+                                        <td>阵容推荐</td>
+                                        <td class="number-cell">18</td>
+                                        <td class="number-cell">11</td>
+                                        <td class="number-cell">4</td>
+                                        <td class="number-cell">33</td>
+                                    </tr>
+                                    <tr>
+                                        <td>高光操作</td>
+                                        <td class="number-cell">88</td>
+                                        <td class="number-cell">61</td>
+                                        <td class="number-cell">22</td>
+                                        <td class="number-cell">171</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p class="table-note">数据来源：抖音王者荣耀相关，30w点赞以上的视频</p>
+                        </div>
+                        
+                        <p><strong>2. 为日常更新兜底：</strong>对王者生态进行持续监控，总结出属于王者的<strong>"爆款选题日历"</strong></p>
+                        
+                        <div class="calendar-container">
+                            <div class="calendar-week">
+                                <div class="calendar-day">
+                                    <div class="day-header">周一</div>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周二</div>
+                                </div>
+                                <div class="calendar-day highlight-day">
+                                    <div class="day-header">周三</div>
+                                    <div class="day-label">王者赛季更新</div>
+                                </div>
+                                <div class="calendar-day highlight-day">
+                                    <div class="day-header">周四</div>
+                                    <div class="video-label">操作设置教学</div>
+                                    <a href="https://v.douyin.com/PcqHwXOwJUk/" target="_blank" class="calendar-video">
+                                        <img src="操作设置.png" alt="操作设置教学">
+                                        <div class="video-overlay"></div>
+                                        <div class="play-button-small">
+                                            <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon-small">
+                                                <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                            </svg>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周五</div>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周六</div>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周日</div>
+                                </div>
+                            </div>
+                            
+                            <div class="calendar-week">
+                                <div class="calendar-day">
+                                    <div class="day-header">周一</div>
+                                </div>
+                                <div class="calendar-day highlight-day">
+                                    <div class="day-header">周二</div>
+                                    <div class="day-label">五五开黑节</div>
+                                    <div class="video-label">五排上分阵容</div>
+                                    <a href="https://v.douyin.com/Osat1s0ocIA/" target="_blank" class="calendar-video">
+                                        <img src="五排套路.png" alt="五排上分阵容">
+                                        <div class="video-overlay"></div>
+                                        <div class="play-button-small">
+                                            <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon-small">
+                                                <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                            </svg>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周三</div>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周四</div>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周五</div>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周六</div>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周日</div>
+                                </div>
+                            </div>
+                            
+                            <div class="calendar-week">
+                                <div class="calendar-day highlight-day">
+                                    <div class="day-header">周一</div>
+                                    <div class="video-label">新春白嫖攻略</div>
+                                    <a href="https://v.douyin.com/WVsaQ4iEK_Y/" target="_blank" class="calendar-video">
+                                        <img src="白嫖攻略.png" alt="新春白嫖攻略">
+                                        <div class="video-overlay"></div>
+                                        <div class="play-button-small">
+                                            <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon-small">
+                                                <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                            </svg>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="calendar-day highlight-day">
+                                    <div class="day-header">周二</div>
+                                    <div class="video-label">春节活动指南</div>
+                                    <a href="https://v.douyin.com/UXA3oCHn8j8/" target="_blank" class="calendar-video">
+                                        <img src="春节活动指南.png" alt="春节活动指南">
+                                        <div class="video-overlay"></div>
+                                        <div class="play-button-small">
+                                            <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon-small">
+                                                <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                            </svg>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="calendar-day highlight-day">
+                                    <div class="day-header">周三</div>
+                                    <div class="day-label">春节</div>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周四</div>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周五</div>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周六</div>
+                                </div>
+                                <div class="calendar-day">
+                                    <div class="day-header">周日</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 实施结果 -->
+                <div class="subsection">
+                    <h3 class="subsection-title">实施结果</h3>
+                    <div class="subsection-content">
+                        <p><strong>1. 教学系列</strong>，期均 <span class="highlight">80万赞</span>：紧跟游戏版本节奏，为玩家提供实用技巧</p>
+                        <div class="hit-series" style="margin-top: 12px;">
+                            <a href="https://v.douyin.com/bxp12EATe9Q/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="ssz_hit1.png" alt="教学系列1">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">03:45</span>
+                                </div>
+                            </a>
+                            <a href="https://v.douyin.com/jzU36Scj4F0/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="ssz_hit2.png" alt="教学系列2">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">04:12</span>
+                                </div>
+                            </a>
+                            <a href="https://v.douyin.com/onfNgpO_lRM/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="ssz_hit3.png" alt="教学系列3">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">05:28</span>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <p><strong>2. 皮肤系列</strong>，期均 <span class="highlight">80万赞</span>：皮肤测评、对比和推荐</p>
+                        <div class="hit-series" style="margin-top: 12px;">
+                            <a href="https://v.douyin.com/UC8F6urvTcw/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="ssz_hit4.png" alt="皮肤系列1">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">02:56</span>
+                                </div>
+                            </a>
+                            <a href="https://v.douyin.com/fCK62y0rErM/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="ssz_hit5.png" alt="皮肤系列2">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">03:18</span>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <p><strong>3. 地图系列</strong>，期均 <span class="highlight">80万赞</span>：用地图的方式盘点王者各种趣事</p>
+                        <div class="hit-series" style="margin-top: 12px;">
+                            <a href="https://v.douyin.com/CVXq97C_34w/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="ssz_hit6.png" alt="地图系列1">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">04:35</span>
+                                </div>
+                            </a>
+                            <a href="https://v.douyin.com/_IduOgGwyXA/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="ssz_hit7.png" alt="地图系列2">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">03:52</span>
+                                </div>
+                            </a>
+                            <a href="https://v.douyin.com/P1PuN1pj9ZM/" target="_blank" class="hit-item">
+                                <div class="hit-item-image">
+                                    <img src="ssz_hit8.png" alt="地图系列3">
+                                    <div class="video-overlay"></div>
+                                    <div class="play-button">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                            <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="video-duration">05:14</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 史上醉数据
+        const sszData = {"weekly": [{"week": "2020-W50", "views": 24506071, "likes": 0, "count": 4}, {"week": "2020-W51", "views": 17717953, "likes": 0, "count": 3}, {"week": "2020-W52", "views": 18240392, "likes": 0, "count": 3}, {"week": "2020-W53", "views": 11097240, "likes": 0, "count": 3}, {"week": "2021-W01", "views": 18000000, "likes": 0, "count": 3}, {"week": "2021-W02", "views": 4471397, "likes": 0, "count": 2}, {"week": "2021-W03", "views": 11315315, "likes": 0, "count": 3}, {"week": "2021-W04", "views": 25900223, "likes": 0, "count": 2}, {"week": "2021-W05", "views": 10659207, "likes": 0, "count": 3}, {"week": "2021-W06", "views": 13518435, "likes": 0, "count": 1}, {"week": "2021-W07", "views": 18004815, "likes": 0, "count": 2}, {"week": "2021-W08", "views": 14302911, "likes": 0, "count": 2}, {"week": "2021-W09", "views": 11509968, "likes": 0, "count": 3}, {"week": "2021-W10", "views": 15084328, "likes": 0, "count": 2}, {"week": "2021-W11", "views": 16792918, "likes": 0, "count": 4}, {"week": "2021-W12", "views": 7925331, "likes": 0, "count": 2}, {"week": "2021-W13", "views": 6209175, "likes": 0, "count": 3}, {"week": "2021-W14", "views": 4743481, "likes": 0, "count": 2}, {"week": "2021-W15", "views": 4458551, "likes": 0, "count": 2}, {"week": "2021-W16", "views": 20853888, "likes": 0, "count": 2}, {"week": "2021-W17", "views": 6551866, "likes": 0, "count": 2}, {"week": "2021-W18", "views": 1505286, "likes": 0, "count": 1}, {"week": "2021-W19", "views": 6823756, "likes": 0, "count": 1}, {"week": "2021-W21", "views": 9439407, "likes": 0, "count": 2}, {"week": "2021-W22", "views": 4166785, "likes": 0, "count": 2}, {"week": "2021-W23", "views": 60203440, "likes": 0, "count": 3}, {"week": "2021-W24", "views": 13459707, "likes": 0, "count": 2}, {"week": "2021-W25", "views": 46474732, "likes": 0, "count": 3}, {"week": "2021-W26", "views": 20494692, "likes": 0, "count": 3}, {"week": "2021-W27", "views": 26643051, "likes": 0, "count": 3}, {"week": "2021-W28", "views": 26437945, "likes": 0, "count": 3}, {"week": "2021-W29", "views": 13628109, "likes": 0, "count": 3}, {"week": "2021-W30", "views": 8953566, "likes": 0, "count": 3}, {"week": "2021-W31", "views": 13488286, "likes": 0, "count": 3}, {"week": "2021-W32", "views": 12888288, "likes": 0, "count": 3}, {"week": "2021-W33", "views": 26443693, "likes": 0, "count": 4}, {"week": "2021-W34", "views": 5145761, "likes": 0, "count": 3}, {"week": "2021-W35", "views": 12124854, "likes": 0, "count": 2}, {"week": "2021-W36", "views": 3009847, "likes": 0, "count": 1}, {"week": "2021-W37", "views": 3359964, "likes": 0, "count": 1}, {"week": "2021-W38", "views": 9657666, "likes": 0, "count": 3}, {"week": "2021-W39", "views": 12876811, "likes": 0, "count": 2}, {"week": "2021-W40", "views": 11810686, "likes": 0, "count": 2}, {"week": "2021-W41", "views": 5002886, "likes": 0, "count": 4}, {"week": "2021-W42", "views": 2626517, "likes": 0, "count": 2}, {"week": "2021-W43", "views": 2312344, "likes": 0, "count": 2}, {"week": "2021-W44", "views": 2004408, "likes": 0, "count": 3}, {"week": "2021-W45", "views": 2575758, "likes": 0, "count": 2}, {"week": "2021-W46", "views": 2031349, "likes": 0, "count": 3}, {"week": "2021-W47", "views": 2942628, "likes": 0, "count": 2}, {"week": "2021-W48", "views": 14770616, "likes": 0, "count": 2}, {"week": "2021-W49", "views": 3194851, "likes": 0, "count": 3}, {"week": "2021-W50", "views": 1712474, "likes": 0, "count": 3}, {"week": "2021-W51", "views": 2287821, "likes": 0, "count": 2}, {"week": "2021-W52", "views": 15370593, "likes": 0, "count": 3}, {"week": "2022-W01", "views": 4437829, "likes": 0, "count": 3}, {"week": "2022-W02", "views": 20284662, "likes": 0, "count": 3}, {"week": "2022-W03", "views": 54365968, "likes": 0, "count": 3}, {"week": "2022-W04", "views": 2477168, "likes": 0, "count": 2}, {"week": "2022-W05", "views": 7957087, "likes": 0, "count": 3}, {"week": "2022-W06", "views": 6982803, "likes": 0, "count": 2}, {"week": "2022-W07", "views": 13557416, "likes": 0, "count": 3}, {"week": "2022-W08", "views": 5521880, "likes": 0, "count": 3}, {"week": "2022-W09", "views": 2992822, "likes": 0, "count": 2}, {"week": "2022-W10", "views": 16431534, "likes": 0, "count": 3}, {"week": "2022-W11", "views": 11761858, "likes": 0, "count": 2}, {"week": "2022-W12", "views": 4821073, "likes": 0, "count": 2}, {"week": "2022-W13", "views": 7400738, "likes": 0, "count": 3}, {"week": "2022-W14", "views": 16524156, "likes": 0, "count": 3}, {"week": "2022-W15", "views": 4676213, "likes": 0, "count": 2}, {"week": "2022-W16", "views": 7858656, "likes": 0, "count": 2}, {"week": "2022-W17", "views": 5012570, "likes": 0, "count": 2}, {"week": "2022-W18", "views": 6955432, "likes": 0, "count": 2}, {"week": "2022-W19", "views": 10256169, "likes": 0, "count": 2}, {"week": "2022-W20", "views": 4921434, "likes": 0, "count": 3}, {"week": "2022-W21", "views": 3062197, "likes": 0, "count": 1}, {"week": "2022-W22", "views": 4705480, "likes": 0, "count": 2}, {"week": "2022-W23", "views": 11794383, "likes": 0, "count": 2}, {"week": "2022-W24", "views": 3420058, "likes": 0, "count": 2}, {"week": "2022-W25", "views": 28428284, "likes": 0, "count": 4}, {"week": "2022-W26", "views": 33027469, "likes": 0, "count": 2}, {"week": "2022-W27", "views": 30288917, "likes": 0, "count": 3}, {"week": "2022-W28", "views": 22031479, "likes": 0, "count": 3}, {"week": "2022-W29", "views": 19448143, "likes": 0, "count": 3}, {"week": "2022-W30", "views": 9860791, "likes": 0, "count": 3}, {"week": "2022-W31", "views": 19155073, "likes": 0, "count": 3}, {"week": "2022-W32", "views": 12392726, "likes": 0, "count": 4}, {"week": "2022-W33", "views": 16366675, "likes": 0, "count": 3}, {"week": "2022-W34", "views": 7803530, "likes": 0, "count": 2}, {"week": "2022-W35", "views": 7242736, "likes": 0, "count": 2}, {"week": "2022-W36", "views": 7674159, "likes": 0, "count": 2}, {"week": "2022-W37", "views": 10732284, "likes": 0, "count": 3}, {"week": "2022-W38", "views": 3189820, "likes": 0, "count": 2}, {"week": "2022-W39", "views": 10120326, "likes": 0, "count": 2}, {"week": "2022-W40", "views": 10047993, "likes": 0, "count": 2}, {"week": "2022-W41", "views": 13989299, "likes": 0, "count": 2}, {"week": "2022-W42", "views": 2216778, "likes": 0, "count": 1}, {"week": "2022-W43", "views": 20803350, "likes": 0, "count": 3}, {"week": "2022-W44", "views": 10328310, "likes": 0, "count": 2}, {"week": "2022-W45", "views": 6179564, "likes": 0, "count": 3}, {"week": "2022-W46", "views": 6907039, "likes": 0, "count": 3}, {"week": "2022-W47", "views": 3432513, "likes": 0, "count": 2}, {"week": "2022-W48", "views": 5267122, "likes": 0, "count": 3}, {"week": "2022-W49", "views": 3767936, "likes": 0, "count": 3}, {"week": "2022-W50", "views": 8560287, "likes": 0, "count": 3}, {"week": "2022-W51", "views": 3342020, "likes": 0, "count": 2}, {"week": "2022-W52", "views": 1438112, "likes": 0, "count": 2}], "turning_point": "2021-W18"};
+
+        // 绘制图表
+        const ctx = document.getElementById('sszChart').getContext('2d');
+        
+        // 准备数据
+        const labels = sszData.weekly.map((_, index) => `W${index + 1}`);
+        const viewsData = sszData.weekly.map(item => item.views / 10000); // 转换为万
+        const turningPointIndex = sszData.weekly.findIndex(item => item.week === sszData.turning_point);
+        
+        // 创建渐变色 (苹果蓝渐变)
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(0, 122, 255, 0.2)');
+        gradient.addColorStop(1, 'rgba(0, 122, 255, 0)');
+
+        // 自定义插件：在红点上方绘制标注
+        const turningPointLabelPlugin = {
+            id: 'turningPointLabel',
+            afterDatasetsDraw(chart) {
+                const { ctx, chartArea, scales } = chart;
+                const meta = chart.getDatasetMeta(0);
+                const point = meta.data[turningPointIndex];
+                
+                if (point) {
+                    const x = point.x;
+                    const y = point.y;
+                    
+                    // 绘制标注背景
+                    ctx.save();
+                    ctx.fillStyle = 'rgba(255, 59, 48, 0.1)';
+                    ctx.strokeStyle = 'rgba(255, 59, 48, 0.3)';
+                    ctx.lineWidth = 1;
+                    
+                    const text = '阶段性拐点 (2021-W18)';
+                    ctx.font = '600 13px -apple-system, BlinkMacSystemFont, sans-serif';
+                    const textWidth = ctx.measureText(text).width;
+                    const padding = 12;
+                    const boxWidth = textWidth + padding * 2;
+                    const boxHeight = 28;
+                    const boxX = x - boxWidth / 2;
+                    const boxY = y - 100; // 在红点上方100px（增加距离避免被线条遮挡）
+                    
+                    // 绘制圆角矩形背景
+                    ctx.beginPath();
+                    ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 20);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // 绘制红点
+                    ctx.beginPath();
+                    ctx.arc(boxX + 10, boxY + boxHeight / 2, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#FF3B30';
+                    ctx.fill();
+                    
+                    // 绘制红点光晕
+                    ctx.beginPath();
+                    ctx.arc(boxX + 10, boxY + boxHeight / 2, 7, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(255, 59, 48, 0.2)';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                    
+                    // 绘制文字
+                    ctx.fillStyle = '#FF3B30';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(text, boxX + 22, boxY + boxHeight / 2);
+                    
+                    // 绘制指向线
+                    ctx.beginPath();
+                    ctx.moveTo(x, boxY + boxHeight);
+                    ctx.lineTo(x, y - 8);
+                    ctx.strokeStyle = 'rgba(255, 59, 48, 0.4)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    ctx.restore();
+                }
+            }
+        };
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '播放量',
+                    data: viewsData,
+                    borderColor: '#007AFF',
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: (context) => {
+                        return context.dataIndex === turningPointIndex ? 6 : 0;
+                    },
+                    pointBackgroundColor: (context) => {
+                        return context.dataIndex === turningPointIndex ? '#FF3B30' : '#007AFF';
+                    },
+                    pointBorderColor: '#FFFFFF',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 8,
+                    pointHoverBackgroundColor: '#FF3B30',
+                    pointHoverBorderColor: '#FFFFFF',
+                    pointHoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 80, // 增加顶部空间以容纳标注
+                        right: 20,
+                        bottom: 10,
+                        left: 10
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        cornerRadius: 8,
+                        titleFont: { size: 14, family: '-apple-system', weight: '500' },
+                        bodyFont: { size: 14, family: '-apple-system' },
+                        displayColors: false,
+                        callbacks: {
+                            title: function(context) {
+                                return '周: ' + sszData.weekly[context[0].dataIndex].week;
+                            },
+                            label: function(context) {
+                                return '播放量: ' + context.parsed.y.toFixed(2) + '万';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        position: 'right',
+                        grid: {
+                            display: true,
+                            color: 'rgba(0, 0, 0, 0.04)',
+                            drawBorder: false
+                        },
+                        border: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#86868B',
+                            font: {
+                                family: '-apple-system',
+                                size: 12
+                            },
+                            padding: 10,
+                            callback: function(value) {
+                                return value.toFixed(0) + 'w';
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            },
+            plugins: [turningPointLabelPlugin]
+        });
+    </script>
+</body>
+</html>
