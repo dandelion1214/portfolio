@@ -147,3 +147,458 @@ body {
 .fade-in {
     animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* ============================================
+   全局手机端适配 - 统一优化所有页面
+   以下规则仅在手机端生效，桌面端（>768px）完全不受影响
+   ============================================ */
+
+/* ========== 平板 & 大屏手机 (≤ 768px) ========== */
+@media (max-width: 768px) {
+    /* 导航栏紧凑化 */
+    .nav-content {
+        padding: 12px 16px !important;
+    }
+    
+    .nav-links {
+        gap: 14px !important;
+    }
+    
+    .nav-links a {
+        font-size: 13px !important;
+    }
+    
+    .nav-logo {
+        font-size: 15px !important;
+    }
+    
+    /* 返回按钮 - 紧凑样式 */
+    .back-button {
+        padding: 8px 14px !important;
+        font-size: 13px !important;
+        gap: 4px !important;
+        border-radius: 16px !important;
+        top: 72px !important;
+        left: 16px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    /* 通用标题缩放 */
+    .detail-title,
+    .page-title {
+        font-size: 32px !important;
+        line-height: 1.15 !important;
+    }
+    
+    .detail-subtitle,
+    .page-description {
+        font-size: 15px !important;
+    }
+    
+    .section-title {
+        font-size: 22px !important;
+    }
+    
+    .section-subtitle {
+        font-size: 14px !important;
+        margin-bottom: 24px !important;
+    }
+    
+    .subsection-title {
+        font-size: 18px !important;
+    }
+    
+    /* 容器 padding 收缩 */
+    .detail-container {
+        padding: 80px 16px 40px !important;
+    }
+    
+    .page-container {
+        padding: 80px 16px 40px !important;
+    }
+    
+    .page-header {
+        margin-bottom: 36px !important;
+    }
+    
+    .detail-header {
+        margin-bottom: 28px !important;
+    }
+    
+    /* section 间距收缩 */
+    .section {
+        margin-bottom: 48px !important;
+    }
+    
+    .subsection {
+        margin-bottom: 28px !important;
+    }
+    
+    /* 卡片 padding 收缩 */
+    .section-content,
+    .apple-card,
+    .comparison-item,
+    .module-card,
+    .iteration-card {
+        padding: 20px !important;
+        border-radius: 20px !important;
+    }
+    
+    /* 对比网格改为纵向 */
+    .comparison-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        margin-bottom: 32px !important;
+    }
+    
+    /* 通用文字可读性 */
+    .subsection-content,
+    .module-desc,
+    .iteration-text {
+        font-size: 14px !important;
+        line-height: 1.65 !important;
+    }
+    
+    /* 图表容器 */
+    .chart-container {
+        height: 260px !important;
+        padding: 12px !important;
+        margin: 20px 0 !important;
+    }
+    
+    /* 账号链接按钮（详情页顶部的抖音/B站入口） */
+    .account-link {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+    }
+    
+    .account-link-icon {
+        font-size: 14px !important;
+    }
+    
+    /* 标题+链接 行布局调整 */
+    .title-and-link {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+    
+    /* section-title-row 紧凑 */
+    .section-title-row {
+        margin-bottom: 16px !important;
+    }
+    
+    /* AI 工具页：工作流节点缩小 */
+    .node-icon {
+        width: 56px !important;
+        height: 56px !important;
+        font-size: 28px !important;
+        border-radius: 14px !important;
+    }
+    
+    .node-content {
+        padding: 16px 14px !important;
+        margin-top: 16px !important;
+    }
+    
+    .node-title {
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .node-description {
+        font-size: 12px !important;
+    }
+    
+    .workflow-container {
+        padding: 32px 16px !important;
+    }
+    
+    /* AI 工具页：IO 对比区 */
+    .io-comparison {
+        padding: 20px !important;
+    }
+    
+    .io-tag {
+        font-size: 12px !important;
+        padding: 4px 12px !important;
+    }
+    
+    .step-badge {
+        font-size: 11px !important;
+        padding: 3px 10px !important;
+    }
+    
+    .step-title-text {
+        font-size: 14px !important;
+    }
+    
+    .output-box,
+    .input-box,
+    .result-box {
+        padding: 14px !important;
+        border-radius: 12px !important;
+    }
+    
+    /* 案例库 stats */
+    .library-showcase {
+        padding: 20px !important;
+    }
+    
+    .stat-number {
+        font-size: 32px !important;
+    }
+    
+    .stat-label {
+        font-size: 13px !important;
+    }
+    
+    .stat-box {
+        padding: 20px 14px !important;
+    }
+    
+    /* 视频卡片统一 */
+    .hit-series {
+        gap: 12px !important;
+        padding: 12px 2px 20px 2px !important;
+    }
+    
+    .hit-item {
+        width: 140px !important;
+    }
+    
+    /* 更多系列案例网格 */
+    .more-series-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+    
+    .more-series-title {
+        font-size: 15px !important;
+    }
+    
+    .more-series-stats {
+        font-size: 13px !important;
+    }
+    
+    /* 突出标记 */
+    .highlight {
+        padding: 1px 6px !important;
+        font-size: inherit !important;
+    }
+    
+    /* 迭代卡片 */
+    .iteration-title {
+        font-size: 15px !important;
+        margin-bottom: 12px !important;
+        line-height: 1.4 !important;
+    }
+    
+    .iteration-label {
+        font-size: 13px !important;
+    }
+    
+    /* 模块卡片 */
+    .module-title {
+        font-size: 15px !important;
+        margin-bottom: 10px !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* 首页 - 账号/系列/AI工具卡片单列 */
+    .accounts-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+    
+    .series-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+    
+    .account-card {
+        padding: 24px !important;
+        min-height: auto !important;
+    }
+    
+    .account-title {
+        font-size: 22px !important;
+    }
+    
+    /* 首页 Hero 区 */
+    .hero-title {
+        font-size: 44px !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 18px !important;
+    }
+    
+    /* 工具图标 */
+    .tool-icon {
+        width: 56px !important;
+        height: 56px !important;
+    }
+    
+    .content-icon-large,
+    .content-icon-img {
+        width: 48px !important;
+        height: 48px !important;
+    }
+    
+    .series-avatar {
+        width: 48px !important;
+        height: 48px !important;
+    }
+    
+    /* 系列卡片带背景图的 */
+    .series-with-bg {
+        min-height: 280px !important;
+    }
+}
+
+/* ========== 标准手机 (≤ 480px, iPhone 标准尺寸) ========== */
+@media (max-width: 480px) {
+    /* 标题再收缩 */
+    .detail-title,
+    .page-title {
+        font-size: 28px !important;
+    }
+    
+    .section-title {
+        font-size: 20px !important;
+    }
+    
+    .subsection-title {
+        font-size: 16px !important;
+    }
+    
+    /* 容器 padding 再收缩 */
+    .detail-container,
+    .page-container {
+        padding: 72px 14px 32px !important;
+    }
+    
+    .section-content,
+    .apple-card,
+    .comparison-item,
+    .module-card,
+    .iteration-card {
+        padding: 16px !important;
+        border-radius: 18px !important;
+    }
+    
+    /* 导航更紧凑 */
+    .nav-links {
+        gap: 10px !important;
+    }
+    
+    .nav-links a {
+        font-size: 12px !important;
+    }
+    
+    /* 返回按钮再小一点 */
+    .back-button {
+        padding: 7px 12px !important;
+        font-size: 12px !important;
+        top: 66px !important;
+        left: 12px !important;
+    }
+    
+    /* 工作流节点再小 */
+    .node-icon {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 22px !important;
+    }
+    
+    /* 视频卡片 */
+    .hit-item {
+        width: 128px !important;
+    }
+    
+    /* 图表 */
+    .chart-container {
+        height: 240px !important;
+        padding: 10px !important;
+    }
+    
+    /* 数据展示 */
+    .stat-number {
+        font-size: 28px !important;
+    }
+    
+    .stat-value {
+        font-size: 18px !important;
+    }
+    
+    /* 首页 Hero */
+    .hero-title {
+        font-size: 36px !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 16px !important;
+    }
+    
+    .account-title {
+        font-size: 20px !important;
+    }
+    
+    .account-description {
+        font-size: 13px !important;
+    }
+    
+    /* 导航 logo */
+    .nav-logo {
+        font-size: 14px !important;
+    }
+    
+    /* 文案展示页的标注系统 */
+    .annotation-mark {
+        font-size: 12px !important;
+        padding: 1px 4px !important;
+    }
+    
+    /* 普通段落字号 */
+    p {
+        line-height: 1.6;
+    }
+}
+
+/* ========== 超小屏 (≤ 360px, 老款手机兼容) ========== */
+@media (max-width: 360px) {
+    .detail-title,
+    .page-title {
+        font-size: 24px !important;
+    }
+    
+    .section-title {
+        font-size: 18px !important;
+    }
+    
+    .hit-item {
+        width: 110px !important;
+    }
+    
+    .nav-links {
+        gap: 8px !important;
+    }
+    
+    .nav-links a {
+        font-size: 11px !important;
+    }
+    
+    .hero-title {
+        font-size: 32px !important;
+    }
+    
+    .back-button {
+        padding: 6px 10px !important;
+        font-size: 11px !important;
+    }
+    
+    .account-card {
+        padding: 20px !important;
+    }
+}
